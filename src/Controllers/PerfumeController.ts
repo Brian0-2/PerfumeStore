@@ -53,4 +53,17 @@ export class PerfumeController {
       return errorHandler({ res, message: "Error Updating perfume", statusCode: 500 });      
     }
   }
+
+  static deletePerfumeById = async (req: Request, res: Response) => {
+    try {
+      const perfume = await Perfume.findOne({ where: {id: req.params.id } });
+
+      if (!perfume) return errorHandler({ res, message: "Perfume Not Found", statusCode: 404 });
+      
+      await perfume.destroy();
+      res.status(200).json({message : `Perfume ${perfume.name} was deleted`});
+    } catch (error) {
+      return errorHandler({ res, message: "Error Deleting perfume", statusCode: 500 });       
+    }
+  }
 }

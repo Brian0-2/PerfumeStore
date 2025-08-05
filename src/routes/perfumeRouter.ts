@@ -136,4 +136,10 @@ perfumeRouter.put('/:id',
   PerfumeController.updatePerfumeById
 )
 
+perfumeRouter.delete('/:id',
+  param("id").isInt().withMessage("Perfume ID must be an integer").toInt(),
+  handleInputErrors,
+  PerfumeController.deletePerfumeById
+)
+
 export default perfumeRouter;
