@@ -1,9 +1,9 @@
 import { Table, Column, Model, DataType, Default, AllowNull, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
-import Client from "./Client";
 import CustomerOrderDetail from "./CustomerOrderDetail";
 import PaymentMethod from "./PaymentMethod";
 import OrderStatus from "./OderStatus";
 import Payment from "./Payments";
+import User from "./User";
 
 @Table({ tableName: "customer_orders" })
 class CustomerOrder extends Model {
@@ -16,9 +16,9 @@ class CustomerOrder extends Model {
   @Column(DataType.BOOLEAN)
   declare is_paid: boolean;
 
-  @ForeignKey(() => Client)
+  @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  declare client_id: number;
+  declare user_id: number;
 
   @ForeignKey(() => OrderStatus)
   @Column(DataType.INTEGER)
@@ -28,8 +28,8 @@ class CustomerOrder extends Model {
   @Column(DataType.INTEGER)
   declare payment_method_id: number;
 
-  @BelongsTo(() => Client)
-  declare client: Client;
+  @BelongsTo(() => User)
+  declare user: User;
 
   @BelongsTo(() => OrderStatus)
   declare order_status: OrderStatus;

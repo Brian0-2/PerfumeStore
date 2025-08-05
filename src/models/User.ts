@@ -14,6 +14,13 @@ class User extends Model {
     @Column(DataType.STRING(100))
     declare email: string;
 
+    @Unique
+    @Column(DataType.STRING(20))
+    declare phone: string;
+
+    @Column(DataType.TEXT)
+    declare address: string;
+
     @AllowNull(false)
     @Column(DataType.STRING(255))
     declare password: string;

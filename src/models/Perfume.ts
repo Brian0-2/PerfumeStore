@@ -28,6 +28,10 @@ class Perfume extends Model {
   @Column(DataType.DECIMAL(10, 2))
   declare to_earn: number;
 
+  @AllowNull(false)
+  @Column(DataType.DECIMAL)
+  declare price : number;
+
   @ForeignKey(() => Brand)
   @Column(DataType.INTEGER)
   declare brand_id: number;

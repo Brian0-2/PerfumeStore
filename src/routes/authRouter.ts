@@ -1,7 +1,5 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-{
-}
 import { AuthController } from "../Controllers/AuthController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import { limiter } from "../config/limiter";
@@ -14,10 +12,14 @@ authRouter.use(limiter);
 authRouter.post(
   "/create-account",
   body("name").notEmpty().withMessage("Name is required"),
+  body("email").isEmail().withMessage("Email is not valid"),
+  body("phone")
+    .notEmpty().withMessage('Phone is required')
+    .isLength({min: 10, max : 10}).withMessage("Phone is 10 characters required"),
   body("password")
+    .notEmpty().withMessage('Password is required')
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
-  body("email").isEmail().withMessage("Email is not valid"),
 
   handleInputErrors,
   AuthController.createAccount
