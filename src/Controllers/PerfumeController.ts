@@ -30,8 +30,7 @@ export class PerfumeController {
 
   static getPerfumeById = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
-      const perfume = await Perfume.findOne({ where: { id } });
+      const perfume = await Perfume.findOne({ where: {id: req.params.id } });
 
       if (!perfume) return errorHandler({ res, message: "Perfume Not Found", statusCode: 404 });
 
@@ -40,4 +39,18 @@ export class PerfumeController {
       return errorHandler({ res, message: "Error Getting Perfume", statusCode: 500 });
     }
   };
+
+  static updatePerfumeById = async (req: Request, res: Response) => {
+    try {
+      const perfume = await Perfume.findOne({ where: {id: req.params.id } });
+
+      if (!perfume) return errorHandler({ res, message: "Perfume Not Found", statusCode: 404 });
+
+      await perfume.update(req.body);
+
+      res.status(200).json({message: `Perfume ${perfume.name} was updated`});
+    } catch (error) {
+      return errorHandler({ res, message: "Error Updating perfume", statusCode: 500 });      
+    }
+  }
 }
