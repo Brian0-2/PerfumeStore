@@ -1,7 +1,9 @@
+import { db } from './config/db';
+import { corsConfig } from './config/cors';
 import express from 'express';
+import cors from 'cors';
 import colors from 'colors';
 import morgan from 'morgan';
-import { db } from './config/db';
 import authRouter from './routes/authRouter';
 import perfumeRouter from './routes/perfumeRouter';
 
@@ -20,6 +22,9 @@ async function connectDB() {
 connectDB();
 
 const app = express();
+
+//Permitir cors
+app.use(cors(corsConfig))
 
 app.use(morgan('dev'));
 app.use(express.json());

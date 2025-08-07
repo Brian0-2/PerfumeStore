@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
-import User from "../models/User";
 import { checkPassword, getToken, hashPassword } from "../utils/auth";
 import { AuthEmail } from "../emails/AuthEmail";
 import { generateJWT } from "../utils/jwt";
 import { errorHandler } from "../utils/errorHandler";
+import User from "../models/User";
+
 
 export class AuthController {
 

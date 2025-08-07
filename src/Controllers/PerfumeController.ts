@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
-import fs from 'fs-extra'
 import { UploadedFile } from 'express-fileupload';
 import { errorHandler } from "../utils/errorHandler";
-import Perfume from "../models/Perfume";
 import { deleteImage, uploadImage } from "../config/cloudinary";
+import Perfume from "../models/Perfume";
+import fs from 'fs-extra'
+
 
 export class PerfumeController {
   static getAllPerfumes = async (req: Request, res: Response) => {
@@ -28,7 +29,7 @@ export class PerfumeController {
       const result = await uploadImage(file.tempFilePath);
 
       perfume.imageUrl = result.secure_url;
-      perfume.imageId = result.public_id
+      perfume.imageId = result.public_id;
 
       await Promise.all([fs.unlink(file.tempFilePath), perfume.save()]);
 
@@ -56,7 +57,7 @@ export class PerfumeController {
       };
 
       if (req.files?.image) {
-        
+
         const file = req.files.image as UploadedFile;
         const oldImageId = req.perfume.imageId;
         const result = await uploadImage(file.tempFilePath);

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import fileUpload from 'express-fileupload'
 import { handleInputErrors } from "../middleware/handleInputErrors";
-import authenticate from "../middleware/auth";
 import { PerfumeController } from "../Controllers/PerfumeController";
 import { validateImageUpload, validatePerfumeExist, validatePerfumeId, validatePerfumeInput } from "../middleware/Perfumes/validatePerfumes";
+import authenticate from "../middleware/auth";
+import fileUpload from 'express-fileupload'
+
 
 const perfumeRouter = Router();
 
