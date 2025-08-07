@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { body, param } from "express-validator";
+import fileUpload from 'express-fileupload'
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import authenticate from "../middleware/auth";
 import { PerfumeController } from "../Controllers/PerfumeController";
-import { validatePerfumeExist, validatePerfumeId, validatePerfumeInput } from "../middleware/Perfumes/validatePerfumes";
+import { validateImageUpload, validatePerfumeExist, validatePerfumeId, validatePerfumeInput } from "../middleware/Perfumes/validatePerfumes";
 
 const perfumeRouter = Router();
 
@@ -18,6 +18,11 @@ perfumeRouter.get("/:id",
 );
 
 perfumeRouter.post("/",
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: './uploads'
+  }),
+  validateImageUpload(true),
   validatePerfumeInput,
   handleInputErrors,
   PerfumeController.createPerfume
@@ -25,6 +30,11 @@ perfumeRouter.post("/",
 
 perfumeRouter.put('/:id',
   validatePerfumeId,
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: './uploads'
+  }),
+  validateImageUpload(false),
   validatePerfumeExist,
   validatePerfumeInput,
   handleInputErrors,

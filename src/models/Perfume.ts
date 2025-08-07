@@ -17,8 +17,13 @@ class Perfume extends Model {
   @Column(DataType.STRING(10))
   declare size: string;
 
-  @Column(DataType.STRING(100))
-  declare image: string;
+  @AllowNull(true)
+  @Column(DataType.STRING(175))
+  declare imageUrl: string;
+
+  @AllowNull(true)
+  @Column(DataType.STRING(200))
+  declare imageId: string;
 
   @AllowNull(false)
   @Column(DataType.DECIMAL(10, 2))

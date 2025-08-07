@@ -23,13 +23,15 @@ export class AuthController {
             user.password = await hashPassword(password);
             user.token = getToken();
 
-            await AuthEmail.sendConfirmationEmail({
-                name: user.name,
-                email: user.email,
-                token: user.token
-            })
-
-            await user.save();
+            await Promise.all([
+                user.save(),
+                AuthEmail.sendConfirmationEmail({
+                    name: user.name,
+                    email: user.email,
+                    token: user.token
+                })
+            ]);
+            
             res.status(201).json({ message: 'Account created successfully' });
         } catch (error) {
             return errorHandler({ res, message: "Error Creating Account", statusCode: 500 });
@@ -97,13 +99,14 @@ export class AuthController {
             if (!user.confirmed) return errorHandler({ res, message: "Account not confirmed", statusCode: 403 });
 
             user.token = getToken();
-            await user.save();
-
-            await AuthEmail.sendPasswordResetToken({
-                name: user.name,
-                email: user.email,
-                token: user.token
-            })
+            await Promise.all([
+                user.save(),
+                AuthEmail.sendPasswordResetToken({
+                    name: user.name,
+                    email: user.email,
+                    token: user.token
+                })
+            ]);
 
             //generate token
             res.status(200).json({ message: "Check your email for instructions" });
