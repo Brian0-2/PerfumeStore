@@ -12,3 +12,7 @@ export const checkPassword = async (password : string, hashedPassword : string) 
 export const getToken = () : string => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
+
+export const tokenExpires = () : Date => {
+    return new Date(Date.now() + 15 * 60 * 1000); // 15 min
+}

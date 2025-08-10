@@ -36,7 +36,7 @@ const authenticate = async (req: Request, res: Response, next: NextFunction): Pr
     }
 
     const user = await User.findByPk(decoded.id, {
-      attributes: ['id', 'name', 'email']
+      attributes: ['id', 'name', 'email', "role"]
     });
 
     if (!user) {

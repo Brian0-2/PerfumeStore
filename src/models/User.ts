@@ -15,15 +15,17 @@ class User extends Model {
     declare email: string;
 
     @Unique
-    @Column(DataType.STRING(20))
+    @Column(DataType.STRING(10))
     declare phone: string;
 
     @Column(DataType.TEXT)
     declare address: string;
 
-    @AllowNull(false)
-    @Column(DataType.STRING(255))
+    @Column(DataType.STRING(60))
     declare password: string;
+
+    @Column(DataType.DATE)
+    declare tokenExpiresAt: Date;
 
     @Column(DataType.STRING(6))
     declare token: string;

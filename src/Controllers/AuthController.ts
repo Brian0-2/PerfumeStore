@@ -1,58 +1,102 @@
-import type { Request, Response } from "express";
-import { checkPassword, getToken, hashPassword } from "../utils/auth";
+import { type Request, type Response } from "express";
+import { Op, where } from "sequelize";
+
+import { checkPassword, getToken, hashPassword, tokenExpires } from "../utils/auth";
 import { AuthEmail } from "../emails/AuthEmail";
 import { generateJWT } from "../utils/jwt";
 import { errorHandler } from "../utils/errorHandler";
 import User from "../models/User";
+import { handleInputErrors } from "../middleware/handleInputErrors";
 
 
 export class AuthController {
 
     static createAccount = async (req: Request, res: Response) => {
         try {
+            const { name, email, phone, address } = req.body;
 
-            const { email, password, phone } = req.body
+            const existingUser = await User.findOne({
+                where: {
+                    [Op.or]: [
+                        { email },
+                        { phone }
+                    ]
+                }
+            });
 
-            //prevent duplicate email and phone
-            const userEmailExist = await User.findOne({ where: { email } });
-            const userPhoneExist = await User.findOne({ where: { phone } });
+            if (existingUser) {
+                if (existingUser.email === email) {
+                    return errorHandler({ res, message: `Usuario con el Correo ${existingUser.email} ya existe.`, statusCode: 409 });
+                }
+                if (existingUser.phone === phone) {
+                    return errorHandler({ res, message: `Usuario con el Celular ${existingUser.phone} ya existe.`, statusCode: 409 });
+                }
+            }
 
-            if (userEmailExist) return errorHandler({ res, message: "User already exists", statusCode: 409 });
-            if (userPhoneExist) return errorHandler({ res, message: "Phone already exists", statusCode: 409 });
+            const token = getToken();
+            const tokenExpiresAt = tokenExpires();
 
-            const user = await User.create(req.body);
-            user.password = await hashPassword(password);
-            user.token = getToken();
+            const user = await User.create({
+                name,
+                email,
+                phone,
+                address,
+                password: "",
+                token,
+                tokenExpiresAt,
+                confirmed: false,
+                role: "client"
+            });
 
-            await Promise.all([
-                user.save(),
-                AuthEmail.sendConfirmationEmail({
-                    name: user.name,
-                    email: user.email,
-                    token: user.token
-                })
-            ]);
-            
-            res.status(201).json({ message: 'Account created successfully' });
+            await AuthEmail.sendConfirmationEmail({
+                name: user.name,
+                email: user.email,
+                token: user.token
+            });
+
+            res.status(201).json({
+                message: "Cuenta creada correctamente, Avisa al usuario que tiene 15min para confirmar su cuenta."
+            });
+
         } catch (error) {
+            console.log(error);
             return errorHandler({ res, message: "Error Creating Account", statusCode: 500 });
         }
-    }
+    };
 
-    static confirmAccount = async (req: Request, res: Response) => {
+
+    //TODO
+    static createUserPassword = async (req: Request, res: Response) => {
         try {
             const { token } = req.body ?? req.params;
+            const { password } = req.body;
 
-            //check if token is valid or the id is needed to update the instance
-            const user = await User.findOne({ where: { token: token }, attributes: ['id', 'token', 'confirmed'] });
+            const user = await User.findOne({
+                where: {
+                    token
+                },
+                attributes: ['id', 'token', 'tokenExpiresAt', 'confirmed', 'password']
+            })
 
-            if (!user) return errorHandler({ res, message: "Token is invalid", statusCode: 404 });
+            if (!user) {
+                return errorHandler({ res, message: "Token not valid", statusCode: 404 });
+            }
 
-            await user.update({ confirmed: true, token: null });
+            if (!user.tokenExpiresAt || user.tokenExpiresAt < new Date()) {
+                return errorHandler({ res, message: "Token expired", statusCode: 400 });
+            }
 
-            res.status(200).json({ message: "Account confirmed successfully" });
+            user.password = await hashPassword(password);
+            user.token = null;
+            user.tokenExpiresAt = null;
+            user.confirmed = true;
+
+            await user.save();
+
+            res.status(200).json({ message: "Password added successfully" });
+
         } catch (error) {
-            return errorHandler({ res, message: "Error Confirming Account", statusCode: 500 });
+            console.log(error);
         }
     }
 
@@ -140,7 +184,6 @@ export class AuthController {
             const { token } = req.params;
             const { password } = req.body;
 
-            //check if token is valid
             const user = await User.findOne({
                 where: {
                     token
@@ -148,12 +191,14 @@ export class AuthController {
                 attributes: ['id', 'token', 'confirmed']
             });
 
-            if (!user) return errorHandler({ res, message: "Token not valid", statusCode: 404 });
-
-            //hash password
+            if (!user) 
+                return errorHandler({ res, message: "Token not valid", statusCode: 404 });
+            if (!user.tokenExpiresAt || user.tokenExpiresAt < new Date()) 
+                return errorHandler({ res, message: "Token expired", statusCode: 400 });
+            
             user.password = await hashPassword(password);
-            //Change token
             user.token = null;
+            user.tokenExpiresAt = null;
             await user.save();
 
             res.status(200).json({ message: "Password reset successfully" });

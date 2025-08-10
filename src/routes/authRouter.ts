@@ -4,6 +4,7 @@ import { AuthController } from "../Controllers/AuthController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import { limiter } from "../config/limiter";
 import authenticate from "../middleware/auth";
+import { validateUserRole } from "../middleware/validateUserRole";
 
 const authRouter = Router();
 
@@ -11,29 +12,36 @@ authRouter.use(limiter);
 
 authRouter.post(
   "/create-account",
+  authenticate,
+  validateUserRole("admin"),
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Email is not valid"),
   body("phone")
     .notEmpty().withMessage('Phone is required')
     .isLength({min: 10, max : 10}).withMessage("Phone is 10 characters required"),
-  body("password")
-    .notEmpty().withMessage('Password is required')
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long"),
-
   handleInputErrors,
   AuthController.createAccount
 );
 
-authRouter.post(
-  "/confirm-account",
-  body("token")
+//TODO 
+authRouter.post('/create-password/:token',
+  param('token')
     .isLength({ min: 6, max: 6 })
     .withMessage("Token is not valid")
     .notEmpty()
     .withMessage("Token is not valid"),
-  handleInputErrors,
-  AuthController.confirmAccount
+  body("password")
+      .isLength({ min: 8 })
+      .withMessage("La contraseña debe tener al menos 8 caracteres"),
+    body("confirmPassword")
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Las contraseñas no coinciden");
+        }
+        return true;
+      }),
+      handleInputErrors,
+      AuthController.createUserPassword
 );
 
 authRouter.post(
