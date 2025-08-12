@@ -5,11 +5,13 @@ import { handleInputErrors } from "../middleware/handleInputErrors";
 import { limiter } from "../config/limiter";
 import authenticate from "../middleware/auth";
 import { validateUserRole } from "../middleware/validateUserRole";
+import { validateToken } from "../middleware/validateToken";
 
 const authRouter = Router();
 
 authRouter.use(limiter);
 
+//AUTHENTICATE
 authRouter.post(
   "/create-account",
   authenticate,
@@ -18,30 +20,42 @@ authRouter.post(
   body("email").isEmail().withMessage("Email is not valid"),
   body("phone")
     .notEmpty().withMessage('Phone is required')
-    .isLength({min: 10, max : 10}).withMessage("Phone is 10 characters required"),
+    .isLength({ min: 10, max: 10 }).withMessage("Phone is 10 characters required"),
   handleInputErrors,
   AuthController.createAccount
 );
 
-//TODO 
-authRouter.post('/create-password/:token',
-  param('token')
-    .isLength({ min: 6, max: 6 })
+authRouter.get(
+  "/invite/:token",
+  param("token")
+    .isLength({ min: 36, max: 36 })
+    .withMessage("Token is not valid")
+    .notEmpty()
+    .withMessage("Token is not valid"),
+  handleInputErrors,
+  validateToken,
+  AuthController.validToken
+);
+
+authRouter.post('/invite/:token',
+  param("token")
+    .isLength({ min: 36, max: 36 })
     .withMessage("Token is not valid")
     .notEmpty()
     .withMessage("Token is not valid"),
   body("password")
-      .isLength({ min: 8 })
-      .withMessage("La contraseña debe tener al menos 8 caracteres"),
-    body("confirmPassword")
-      .custom((value, { req }) => {
-        if (value !== req.body.password) {
-          throw new Error("Las contraseñas no coinciden");
-        }
-        return true;
-      }),
-      handleInputErrors,
-      AuthController.createUserPassword
+    .isLength({ min: 8 })
+    .withMessage("La contraseña debe tener al menos 8 caracteres"),
+  body("confirmPassword")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+      return true;
+    }),
+  handleInputErrors,
+  validateToken,
+  AuthController.setPassword
 );
 
 authRouter.post(
@@ -68,20 +82,9 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/validate-token",
-  body("token")
-    .isLength({ min: 6, max: 6 })
-    .withMessage("Token is not valid")
-    .notEmpty()
-    .withMessage("Token is not valid"),
-  handleInputErrors,
-  AuthController.validateToken
-);
-
-authRouter.post(
   "/reset-password/:token",
   param("token")
-    .isLength({ min: 6, max: 6 })
+    .isLength({ min: 36, max: 36 })
     .withMessage("Token is not valid")
     .notEmpty()
     .withMessage("Token is not valid"),
@@ -90,12 +93,22 @@ authRouter.post(
     .withMessage("Password must be at least 8 characters long")
     .notEmpty()
     .withMessage("Password is required"),
+  body("confirmPassword")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Las contraseñas no coinciden");
+      }
+      return true;
+    }),
   handleInputErrors,
+  validateToken,
   AuthController.resetPasswordWithToken
 );
 
+//AUTHENTICATE
 authRouter.get("/user", authenticate, AuthController.getUser);
 
+//AUTHENTICATE
 authRouter.post(
   "/update-password",
   authenticate,

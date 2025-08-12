@@ -27,7 +27,7 @@ class User extends Model {
     @Column(DataType.DATE)
     declare tokenExpiresAt: Date;
 
-    @Column(DataType.STRING(6))
+    @Column(DataType.STRING(36))
     declare token: string;
 
     @AllowNull(false)

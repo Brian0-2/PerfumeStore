@@ -1,0 +1,124 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    style.
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8; /* fondo claro neutro */
+        margin: 0;
+        padding: 0;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        color: #333333;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #ffffff; /* fondo blanco */
+        padding: 30px 35px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-sizing: border-box;
+      }
+      h1 {
+        color: #2c3e50;
+        font-size: 28px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-align: center;
+      }
+      p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+        color: #555555;
+        text-align: center;
+      }
+      .btn-primary {
+        display: block;
+        width: 220px;
+        margin: 20px auto;
+        padding: 14px 0;
+        background-color: #007BFF; /* azul profesional */
+        color: #ffffff !important;
+        font-weight: 600;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(0,123,255,0.4);
+        transition: background-color 0.3s ease;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+      .contact-info {
+        font-size: 14px;
+        color: #777777;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 25px;
+      }
+      .footer {
+        font-size: 12px;
+        color: #999999;
+        text-align: center;
+        margin-top: 40px;
+        border-top: 1px solid #eaeaea;
+        padding-top: 15px;
+      }
+      a.link-secondary {
+        color: #007BFF;
+        text-decoration: none;
+      }
+      a.link-secondary:hover {
+        text-decoration: underline;
+      }
+
+      /* Responsive */
+      @media (max-width: 480px) {
+        .container {
+          margin: 20px 15px;
+          padding: 25px 20px;
+        }
+        h1 {
+          font-size: 24px;
+        }
+        p {
+          font-size: 15px;
+        }
+        .btn-primary {
+          width: 100%;
+          max-width: 100%;
+          padding: 16px 0;
+          font-size: 18px;
+        }
+        .contact-info {
+          font-size: 13px;
+          margin-bottom: 20px;
+        }
+        .footer {
+          font-size: 11px;
+          margin-top: 30px;
+          padding-top: 10px;
+        }
+      }
+body
+  .container
+    h1 Hola y bienvenid@, #{name}!
+    p Gracias por ser parte de <strong>#{app}</strong>. Estamos encantados de tenerte con nosotros. :)
+    p Para completar tu registro, por favor confirma tu cuenta haciendo clic en el botón a continuación.
+    p Este enlace es válido solo por <strong>15min</strong>.
+    a.btn-primary(href=link target="_blank" rel="noopener") Confirmar mi cuenta
+    .contact-info
+      p Si tienes alguna duda, no dudes en contactarnos al <strong>(378) 186-7651</strong> o al <strong>(378) 731-3902</strong>.
+    p Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:
+    p
+      a.link-secondary(href=link target="_blank" rel="noopener") #{link}
+    .footer
+      p Si no solicitaste esta cuenta, por favor ignora este mensaje.
+      p &copy; 2025 #{app}. Todos los derechos reservados.
+
