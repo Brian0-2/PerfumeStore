@@ -6,6 +6,7 @@ import colors from 'colors';
 import morgan from 'morgan';
 import authRouter from './routes/authRouter';
 import perfumeRouter from './routes/perfumeRouter';
+import customerOrderRouter from './routes/customerOrderRouter';
 
 
 async function connectDB() {
@@ -31,5 +32,6 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/perfume', perfumeRouter);
+app.use('/api/customer-order', customerOrderRouter);
 
 export default app;
