@@ -1,22 +1,17 @@
-import { Table, Column, Model, DataType, Unique, HasMany } from 'sequelize-typescript';
-import Payment from './Payments';
-import CustomerOrder from './CustomerOrder';
+import { Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript';
+import Order from './Order';
+import Payment from './Payment';
 import SupplierOrder from './SuplierOrder';
 
-@Table({ 
-  tableName: 'payment_methods' 
-})
+@Table({ tableName: 'payment_methods' })
 class PaymentMethod extends Model {
-
   @Unique
-  @Column({ type: DataType.STRING(80), allowNull: false })
+  @AllowNull(false)
+  @Column(DataType.STRING(80))
   declare name: string;
 
   @HasMany(() => Payment)
   declare payments?: Payment[];
-
-  @HasMany(() => CustomerOrder)
-  declare customer_orders?: CustomerOrder[];
 
   @HasMany(() => SupplierOrder)
   declare supplier_orders?: SupplierOrder[];

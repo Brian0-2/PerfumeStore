@@ -1,17 +1,16 @@
-import {Table, Column, Model, DataType, Unique, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript'; 
 import Perfume from './Perfume';
 
 @Table({ 
-  tableName: 'brands' 
-})
-
+    tableName: 'brands' })
 class Brand extends Model {
-
   @Unique
-  @Column({ type: DataType.STRING(80), allowNull: false })
+  @AllowNull(false)
+  @Column(DataType.STRING(80))
   declare name: string;
 
   @HasMany(() => Perfume)
   declare perfumes?: Perfume[];
 }
+
 export default Brand;

@@ -14,7 +14,7 @@ declare global {
 
 export const validatePerfumeExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const perfume = await Perfume.findByPk(req.params.id)
+    const perfume = await Perfume.findByPk(req.params.id);
 
     if (!perfume) return errorHandler({ res, message: "Perfume no encontrado", statusCode: 404 });
     req.perfume = perfume;

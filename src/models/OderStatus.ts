@@ -1,22 +1,19 @@
-import {Table, Column, Model, DataType, Unique, HasMany } from 'sequelize-typescript';
-import CustomerOrder from './CustomerOrder';
+import { Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript';
+import Order from './Order';
 import SupplierOrder from './SuplierOrder';
 
-@Table({ 
-    tableName: 'order_statuses' 
-})
-
+@Table({ tableName: 'order_statuses' })
 class OrderStatus extends Model {
-
   @Unique
-  @Column({ type: DataType.STRING(80), allowNull: false })
+  @AllowNull(false)
+  @Column(DataType.STRING(80))
   declare name: string;
 
-  @HasMany(() => CustomerOrder)
-  declare customer_order?: CustomerOrder[];
+  @HasMany(() => Order)
+  declare orders?: Order[];
 
   @HasMany(() => SupplierOrder)
-  declare supplier_order?: SupplierOrder[];
+  declare supplier_orders?: SupplierOrder[];
 }
 
 export default OrderStatus;

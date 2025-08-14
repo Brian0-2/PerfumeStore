@@ -1,22 +1,22 @@
 import { Request,Response,NextFunction } from "express";
-import CustomerOrder from "../../models/CustomerOrder";
 import { errorHandler } from "../../utils/errorHandler";
+import Order from "../../models/Order";
 
 
 declare global {
   namespace Express {
     interface Request {
-      customerOrder?: CustomerOrder
+      order?: Order
     }
   }
 }
 
 export const validateCustomerOrderExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const customerOrder = await CustomerOrder.findByPk(req.params.id)
+    const order = await Order.findByPk(req.params.id)
 
-    if (!customerOrder) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
-    req.customerOrder = customerOrder;
+    if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
+    req.order = order;
     next();
   } catch (error) {
     return errorHandler({ res, message: "Error Getting Order", statusCode: 500 });

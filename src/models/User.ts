@@ -1,9 +1,7 @@
-import { Table, Column, Model, DataType, Default, Unique, AllowNull } from "sequelize-typescript";
+import { Table, Column, Model, DataType, Default, Unique, AllowNull, HasMany } from "sequelize-typescript";
+import Order from "./Order";
 
-@Table({
-    tableName: "users"
-})
-
+@Table({ tableName: "users", timestamps: true })
 class User extends Model {
     @AllowNull(false)
     @Column(DataType.STRING(100))
@@ -38,6 +36,9 @@ class User extends Model {
     @Default("client")
     @Column(DataType.ENUM("admin", "client"))
     declare role: string;
+
+    @HasMany(() => Order)
+    declare orders?: Order[];
 }
 
 export default User;

@@ -3,9 +3,10 @@ import Supplier from "./Supplier";
 import Category from "./Category";
 import Brand from "./Brand";
 import FraganceType from "./FraganceType";
-import CustomerOrderDetail from "./CustomerOrderDetail";
+import OrderItem from "./OrderItem";
+import SupplierOrderItem from "./SupplierOrderItem";
 
-@Table({ tableName: "perfumes" })
+@Table({ tableName: "perfumes", timestamps: true })
 class Perfume extends Model {
   @AllowNull(false)
   @Column(DataType.STRING(100))
@@ -24,18 +25,6 @@ class Perfume extends Model {
   @AllowNull(true)
   @Column(DataType.STRING(200))
   declare imageId: string;
-
-  @AllowNull(false)
-  @Column(DataType.DECIMAL(10, 2))
-  declare supplier_price: number;
-
-  @AllowNull(false)
-  @Column(DataType.DECIMAL(10, 2))
-  declare to_earn: number;
-
-  @AllowNull(false)
-  @Column(DataType.DECIMAL)
-  declare price : number;
 
   @ForeignKey(() => Brand)
   @Column(DataType.INTEGER)
@@ -65,8 +54,11 @@ class Perfume extends Model {
   @BelongsTo(() => Category)
   declare category: Category;
 
-  @HasMany(() => CustomerOrderDetail)
-  declare order_details: CustomerOrderDetail[];
+  @HasMany(() => OrderItem)
+  declare order_items?: OrderItem[];
+
+  @HasMany(() => SupplierOrderItem)
+  declare supplier_order_items?: SupplierOrderItem[];
 }
 
 export default Perfume;

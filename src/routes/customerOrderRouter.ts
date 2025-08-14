@@ -36,7 +36,8 @@ customerOrderRouter.post('/',
         .isInt({ gt: 0 }).withMessage("El payment_method_id debe ser un número entero válido")
         .notEmpty().withMessage("El payment_method_id es requerido"),
     handleInputErrors,
-    OrderCustomerController.createOrder
+    OrderCustomerController.createCustomerOrder
 );
+
 
 export default customerOrderRouter;

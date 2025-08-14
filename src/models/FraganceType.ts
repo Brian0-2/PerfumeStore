@@ -1,13 +1,8 @@
-
-import {Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript';
 import Perfume from './Perfume';
 
-@Table({ 
-  tableName: 'fragance_types' 
-})
-
+@Table({ tableName: 'fragance_types' })
 class FraganceType extends Model {
-
   @Unique
   @AllowNull(false)
   @Column(DataType.STRING(80))

@@ -1,12 +1,13 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo, AllowNull } from "sequelize-typescript";
-import CustomerOrder from "./CustomerOrder";
 import PaymentMethod from "./PaymentMethod";
+import Order from "./Order";
 
-@Table({ tableName: "payments" })
+@Table({ tableName: "payments", timestamps: true })
 class Payment extends Model {
-  @ForeignKey(() => CustomerOrder)
+  @ForeignKey(() => Order)
+  @AllowNull(false)
   @Column(DataType.INTEGER)
-  declare customer_order_id: number;
+  declare order_id: number;
 
   @AllowNull(false)
   @Column(DataType.DECIMAL(10, 2))
@@ -19,8 +20,8 @@ class Payment extends Model {
   @Column(DataType.TEXT)
   declare note: string;
 
-  @BelongsTo(() => CustomerOrder)
-  declare customer_order: CustomerOrder;
+  @BelongsTo(() => Order)
+  declare order: Order;
 
   @BelongsTo(() => PaymentMethod)
   declare payment_method: PaymentMethod;
