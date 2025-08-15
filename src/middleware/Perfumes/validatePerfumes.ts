@@ -44,16 +44,6 @@ export const validatePerfumeInput = async (req: Request, res: Response, next: Ne
       .withMessage("La talla es obligatoria")
       .isLength({ max: 50 })
       .withMessage("La talla debe tener como máximo 50 caracteres").run(req),
-    await body("supplier_price")
-      .notEmpty()
-      .withMessage("El precio del proveedor es obligatorio")
-      .isFloat({ gt: 0 })
-      .withMessage("El precio del proveedor debe ser un número decimal positivo").run(req),
-    await body("to_earn")
-      .notEmpty()
-      .withMessage("El valor de ganancia es obligatorio")
-      .isFloat({ gt: 0 })
-      .withMessage("La ganancia debe ser un número decimal positivo").run(req),
     await body("brand_id")
       .notEmpty()
       .withMessage("El ID de la marca es obligatorio")
@@ -92,7 +82,7 @@ export const validateImageUpload = (isRequired: boolean = true) => {
           statusCode: 422
         });
       } else {
-        return next(); // Si no es requerida, se permite continuar
+        return next();
       }
     }
 

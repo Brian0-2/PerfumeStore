@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authenticate from "../middleware/auth";
-import { OrderCustomerController } from "../Controllers/OrderCustomerController";
+import { OrderController } from "../Controllers/OrderController";
 import { validateCustomerOrderExist } from "../middleware/CustomerOrder/validateCustomerOrder";
 import { body, param } from "express-validator";
 import { handleInputErrors } from "../middleware/handleInputErrors";
@@ -11,7 +11,7 @@ customerOrderRouter.use(authenticate);
 
 customerOrderRouter.get(
     "/",
-    OrderCustomerController.getAllOrders
+    OrderController.getAllOrders
 );
 
 customerOrderRouter.get('/:id',
@@ -20,24 +20,36 @@ customerOrderRouter.get('/:id',
         .notEmpty().withMessage("El id es requerido"),
     handleInputErrors,
     validateCustomerOrderExist,
-    OrderCustomerController.getOrderById
+    OrderController.getOrderById
 );
 
-customerOrderRouter.post('/',
-    body("total_amount")
-        .isFloat({ gt: 0 }).withMessage("El total_amount debe ser un número mayor a 0")
-        .notEmpty().withMessage("El total_amount es requerido"),
-
+customerOrderRouter.post(
+    '/',
     body("user_id")
         .isInt({ gt: 0 }).withMessage("El user_id debe ser un número entero válido")
         .notEmpty().withMessage("El user_id es requerido"),
 
-    body("payment_method_id")
-        .isInt({ gt: 0 }).withMessage("El payment_method_id debe ser un número entero válido")
-        .notEmpty().withMessage("El payment_method_id es requerido"),
-    handleInputErrors,
-    OrderCustomerController.createCustomerOrder
-);
+    body("items")
+        .isArray({ min: 1 }).withMessage("La orden debe contener al menos un item"),
 
+    body("items.*.perfume_id")
+        .isInt({ gt: 0 }).withMessage("El perfume_id de cada item debe ser un número entero válido")
+        .notEmpty().withMessage("El perfume_id de cada item es requerido"),
+
+    body("items.*.quantity")
+        .isInt({ gt: 0 }).withMessage("La cantidad de cada item debe ser mayor a 0")
+        .notEmpty().withMessage("La cantidad de cada item es requerida"),
+
+    body("items.*.price_buy")
+        .isFloat({ gt: 0 }).withMessage("El price_buy de cada item debe ser mayor a 0")
+        .notEmpty().withMessage("El price_buy de cada item es requerido"),
+
+    body("items.*.price_sell")
+        .isFloat({ gt: 0 }).withMessage("El price_sell de cada item debe ser mayor a 0")
+        .notEmpty().withMessage("El price_sell de cada item es requerido"),
+
+    handleInputErrors,
+    OrderController.createCustomerOrder
+);
 
 export default customerOrderRouter;

@@ -18,12 +18,7 @@ export class PerfumeController {
 
   static createPerfume = async (req: Request, res: Response) => {
     try {
-      const { supplier_price, to_earn } = req.body;
-
-      const perfume = new Perfume({
-        ...req.body,
-        price: Number(supplier_price) + Number(to_earn)
-      });
+      const perfume = new Perfume(req.body);
 
       const file = req.files.image as UploadedFile;
       const result = await uploadImage(file.tempFilePath);

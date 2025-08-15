@@ -1,7 +1,6 @@
-import { Table, Column, Model, DataType, ForeignKey, AllowNull, BelongsTo, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, ForeignKey, AllowNull, BelongsTo } from "sequelize-typescript";
 import Order from "./Order";
 import Perfume from "./Perfume";
-import SupplierOrderItem from "./SupplierOrderItem";
 
 @Table({ tableName: "order_items", timestamps: true })
 class OrderItem extends Model {
@@ -29,20 +28,13 @@ class OrderItem extends Model {
 
     @AllowNull(false)
     @Column(DataType.DECIMAL(10, 2))
-    declare total_buy: number;
-
-    @AllowNull(false)
-    @Column(DataType.DECIMAL(10, 2))
-    declare total_sell: number;
+    declare to_earn: number;
 
     @BelongsTo(() => Order)
     declare order: Order;
 
     @BelongsTo(() => Perfume)
     declare perfume: Perfume;
-
-    @HasMany(() => SupplierOrderItem)
-    declare supplier_order_items?: SupplierOrderItem[];
 }
 
 export default OrderItem;
