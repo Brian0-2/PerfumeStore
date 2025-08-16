@@ -1,30 +1,30 @@
 import { Router } from "express";
 import { body, param } from "express-validator";
-import { OrderController } from "../Controllers/OrderController";
+import { SupplierController } from "../Controllers/SupplierController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
-import { validateOrderExist } from "../middleware/CustomerOrder/validateOrderExist";
 import authenticate from "../middleware/auth";
+import { validateOrderExist } from "../middleware/SupplierOrder/ValidateOrderExist";
 
 
-const customerOrderRouter = Router();
+const supplierRouter = Router();
 
-customerOrderRouter.use(authenticate);
+supplierRouter.use(authenticate);
 
-customerOrderRouter.get(
+supplierRouter.get(
     "/",
-    OrderController.getAllOrders
+    SupplierController.getAllOrders
 );
 
-customerOrderRouter.get('/:id',
+supplierRouter.get('/:id',
     param("id")
         .isInt({ gt: 0 }).withMessage("El id debe ser un número entero válido")
         .notEmpty().withMessage("El id es requerido"),
     handleInputErrors,
     validateOrderExist,
-    OrderController.getOrderById
+    SupplierController.getOrderById
 );
 
-customerOrderRouter.post(
+supplierRouter.post(
     '/',
     body("user_id")
         .isInt({ gt: 0 }).withMessage("El user_id debe ser un número entero válido")
@@ -50,7 +50,7 @@ customerOrderRouter.post(
         .notEmpty().withMessage("El price_sell de cada item es requerido"),
 
     handleInputErrors,
-    OrderController.createCustomerOrder
+    SupplierController.createSupplierOrder
 );
 
-export default customerOrderRouter;
+export default supplierRouter;

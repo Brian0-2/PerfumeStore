@@ -28,7 +28,7 @@ export class OrderController {
                 ],
                 attributes: ['id', 'is_paid', 'createdAt']
             });
-            //TODO
+            
             res.status(200).json({ orders });
         } catch (error) {
             return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
@@ -63,8 +63,7 @@ export class OrderController {
             res.status(201).json({ message: "Orden creada correctamente" });
         } catch (err) {
             await transaction.rollback();
-            const message = err instanceof Error ? err.message : "Error creando orden";
-            return errorHandler({ res, message, statusCode: 500 });
+            return errorHandler({ res, message :"Error creando orden", statusCode: 500 });
         }
     }
 
@@ -98,7 +97,6 @@ export class OrderController {
 
             res.status(200).json(orderWithDetails);
         } catch (error) {
-            console.log(error);
             return errorHandler({ res, message: "Error obteniendo la orden", statusCode: 500 });
         }
     };
