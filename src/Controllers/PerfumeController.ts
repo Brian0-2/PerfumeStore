@@ -23,8 +23,8 @@ export class PerfumeController {
       const file = req.files.image as UploadedFile;
       const result = await uploadImage(file.tempFilePath);
 
-      perfume.imageUrl = result.secure_url;
-      perfume.imageId = result.public_id;
+      perfume.image_url = result.secure_url;
+      perfume.image_id = result.public_id;
 
       await Promise.all([fs.unlink(file.tempFilePath), perfume.save()]);
 
@@ -54,7 +54,7 @@ export class PerfumeController {
       if (req.files?.image) {
 
         const file = req.files.image as UploadedFile;
-        const oldImageId = req.perfume.imageId;
+        const oldImageId = req.perfume.image_id;
         const result = await uploadImage(file.tempFilePath);
 
         await Promise.all([
@@ -62,8 +62,8 @@ export class PerfumeController {
           deleteImage(oldImageId)
         ]);
 
-        updatedFields.imageUrl = result.secure_url;
-        updatedFields.imageId = result.public_id;
+        updatedFields.image_url = result.secure_url;
+        updatedFields.image_id = result.public_id;
       }
 
       await req.perfume.update(updatedFields);
@@ -76,7 +76,7 @@ export class PerfumeController {
 
   static deletePerfumeById = async (req: Request, res: Response) => {
     try {
-      await Promise.all([deleteImage(req.perfume.imageId), req.perfume.destroy()]);
+      await Promise.all([deleteImage(req.perfume.image_id), req.perfume.destroy()]);
       res.status(200).json({ message: `Perfume ${req.perfume.name} was deleted` });
     } catch (error) {
       return errorHandler({ res, message: "Error Deleting perfume", statusCode: 500 });

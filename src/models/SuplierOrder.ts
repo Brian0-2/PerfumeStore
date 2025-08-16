@@ -1,7 +1,7 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany, AllowNull } from "sequelize-typescript";
 import Supplier from "./Supplier";
 import PaymentMethod from "./PaymentMethod";
-import OrderStatus from "./OderStatus";
+import OrderStatus from "./OrderStatus";
 import SupplierOrderItem from "./SupplierOrderItem";
 
 @Table({ tableName: "supplier_orders", timestamps: true })

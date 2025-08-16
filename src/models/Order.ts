@@ -1,8 +1,8 @@
 import { Table, Column, Model, DataType, Default, AllowNull, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
 import User from "./User";
 import OrderItem from "./OrderItem";
-import OrderStatus from "./OderStatus";
 import Payment from "./Payment";
+import OrderStatus from "./OrderStatus";
 
 @Table({ tableName: "orders", timestamps: true })
 class Order extends Model {
@@ -28,7 +28,7 @@ class Order extends Model {
     declare order_status: OrderStatus;
 
     @HasMany(() => OrderItem)
-    declare items?: OrderItem[];
+    declare order_items?: OrderItem[];
 
     @HasMany(() => Payment)
     declare payments?: Payment[];

@@ -20,11 +20,11 @@ class Perfume extends Model {
 
   @AllowNull(true)
   @Column(DataType.STRING(175))
-  declare imageUrl: string;
+  declare image_url: string;
 
   @AllowNull(true)
   @Column(DataType.STRING(200))
-  declare imageId: string;
+  declare image_id: string;
 
   @ForeignKey(() => Brand)
   @Column(DataType.INTEGER)

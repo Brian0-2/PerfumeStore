@@ -1,9 +1,10 @@
 import { Router } from "express";
-import authenticate from "../middleware/auth";
-import { OrderController } from "../Controllers/OrderController";
-import { validateCustomerOrderExist } from "../middleware/CustomerOrder/validateCustomerOrder";
 import { body, param } from "express-validator";
+import { OrderController } from "../Controllers/OrderController";
+import { validateOrderExist } from "../middleware/CustomerOrder/validateOrder";
 import { handleInputErrors } from "../middleware/handleInputErrors";
+import authenticate from "../middleware/auth";
+
 
 const customerOrderRouter = Router();
 
@@ -19,7 +20,7 @@ customerOrderRouter.get('/:id',
         .isInt({ gt: 0 }).withMessage("El id debe ser un número entero válido")
         .notEmpty().withMessage("El id es requerido"),
     handleInputErrors,
-    validateCustomerOrderExist,
+    validateOrderExist,
     OrderController.getOrderById
 );
 
