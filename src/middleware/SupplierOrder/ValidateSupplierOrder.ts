@@ -13,9 +13,7 @@ declare global {
 
 export const validateOrderExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await Order.findByPk(req.params.id, {
-      attributes: ['id']
-    });
+    const order = await Order.findByPk(req.params.id);
 
     if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
 

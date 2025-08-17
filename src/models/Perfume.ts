@@ -4,10 +4,14 @@ import Category from "./Category";
 import Brand from "./Brand";
 import FraganceType from "./FraganceType";
 import OrderItem from "./OrderItem";
-import SupplierOrderItem from "./SupplierOrderItem";
 
-@Table({ tableName: "perfumes", timestamps: true })
+@Table({
+  tableName: "perfumes",
+  timestamps: true
+})
+
 class Perfume extends Model {
+  
   @AllowNull(false)
   @Column(DataType.STRING(100))
   declare name: string;
@@ -57,8 +61,6 @@ class Perfume extends Model {
   @HasMany(() => OrderItem)
   declare order_items?: OrderItem[];
 
-  @HasMany(() => SupplierOrderItem)
-  declare supplier_order_items?: SupplierOrderItem[];
 }
 
 export default Perfume;

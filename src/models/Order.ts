@@ -1,37 +1,54 @@
-import { Table, Column, Model, DataType, Default, AllowNull, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
-import User from "./User";
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany, AllowNull, Default } from "sequelize-typescript";
+import RecipientType from "./RecipientType";
 import OrderItem from "./OrderItem";
 import Payment from "./Payment";
 import OrderStatus from "./OrderStatus";
 
 @Table({ tableName: "orders", timestamps: true })
 class Order extends Model {
-    @Default(false)
-    @AllowNull(false)
-    @Column(DataType.BOOLEAN)
-    declare is_paid: boolean;
 
-    @ForeignKey(() => User)
-    @AllowNull(false)
-    @Column(DataType.INTEGER)
-    declare user_id: number;
+  @ForeignKey(() => RecipientType)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare recipient_type_id: number;
 
-    @ForeignKey(() => OrderStatus)
-    @AllowNull(false)
-    @Column(DataType.INTEGER)
-    declare order_status_id: number;
+  @Column(DataType.INTEGER)
+  declare recipient_id: number;
 
-    @BelongsTo(() => User)
-    declare user: User;
+  @Default(false)
+  @AllowNull(false)
+  @Column(DataType.BOOLEAN)
+  declare is_paid: boolean;
 
-    @BelongsTo(() => OrderStatus)
-    declare order_status: OrderStatus;
+  @AllowNull(false)
+  @Column(DataType.DECIMAL(10, 2))
+  declare total: number;
 
-    @HasMany(() => OrderItem)
-    declare order_items?: OrderItem[];
+  @Default(0)
+  @AllowNull(false)
+  @Column(DataType.DECIMAL(10, 2))
+  declare amount_paid: number;
 
-    @HasMany(() => Payment)
-    declare payments?: Payment[];
+  @ForeignKey(() => OrderStatus)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare order_status_id: number;
+
+  @BelongsTo(() => OrderStatus)
+  declare order_status: OrderStatus;
+
+  @BelongsTo(() => RecipientType)
+  declare recipient_type: RecipientType;
+
+  @HasMany(() => OrderItem)
+  declare order_items?: OrderItem[];
+
+  @HasMany(() => Payment, {
+    foreignKey: "payable_id",
+    constraints: false,
+    scope: { payable_type_id: 1 }
+  })
+  declare payments?: Payment[];
 }
 
 export default Order;

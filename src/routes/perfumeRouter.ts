@@ -4,11 +4,10 @@ import { PerfumeController } from "../Controllers/PerfumeController";
 import { validateImageUpload, validatePerfumeExist, validatePerfumeId, validatePerfumeInput } from "../middleware/Perfumes/validatePerfumes";
 import authenticate from "../middleware/auth";
 import fileUpload from 'express-fileupload'
-
+import { validateUserRole } from "../middleware/validateUserRole";
 
 const perfumeRouter = Router();
-
-perfumeRouter.use(authenticate);
+perfumeRouter.use(authenticate,validateUserRole('admin'));
 
 perfumeRouter.get("/", PerfumeController.getAllPerfumes);
 

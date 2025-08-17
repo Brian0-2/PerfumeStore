@@ -1,9 +1,15 @@
-import { Table, Column, Model, DataType, AllowNull, HasMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, AllowNull, HasMany, Unique } from "sequelize-typescript";
 import Perfume from "./Perfume";
-import SupplierOrder from "./SuplierOrder";
+import Order from "./Order";
 
-@Table({ tableName: "suppliers" })
+@Table({
+  tableName: "suppliers",
+  timestamps: false
+})
+
 class Supplier extends Model {
+
+  @Unique
   @AllowNull(false)
   @Column(DataType.STRING(100))
   declare name: string;
@@ -20,8 +26,8 @@ class Supplier extends Model {
   @HasMany(() => Perfume)
   declare perfumes: Perfume[];
 
-  @HasMany(() => SupplierOrder)
-  declare supplier_orders: SupplierOrder[];
+  // @HasMany(() => Order)
+  // declare orders: Order[];
 }
 
 export default Supplier;

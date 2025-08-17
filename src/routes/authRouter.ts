@@ -8,10 +8,9 @@ import { validateUserRole } from "../middleware/validateUserRole";
 import { validateToken } from "../middleware/validateToken";
 
 const authRouter = Router();
-
 authRouter.use(limiter);
 
-//AUTHENTICATE
+//AUTHENTICATE AND AUTHORIZE
 authRouter.post(
   "/create-account",
   authenticate,

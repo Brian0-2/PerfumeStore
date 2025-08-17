@@ -28,7 +28,7 @@ export class OrderController {
                 ],
                 attributes: ['id', 'is_paid', 'createdAt']
             });
-            
+
             res.status(200).json({ orders });
         } catch (error) {
             return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
@@ -38,10 +38,11 @@ export class OrderController {
     static createCustomerOrder = async (req: Request, res: Response) => {
         const transaction = await db.transaction();
         try {
-            const { user_id, items } = req.body;
+            const { user_id,total, items } = req.body;
 
             const newOrder = await Order.create({
                 user_id,
+                total,
                 order_status_id: 1,
                 is_paid: false
             }, { transaction });
@@ -63,7 +64,7 @@ export class OrderController {
             res.status(201).json({ message: "Orden creada correctamente" });
         } catch (err) {
             await transaction.rollback();
-            return errorHandler({ res, message :"Error creando orden", statusCode: 500 });
+            return errorHandler({ res, message: "Error creando orden", statusCode: 500 });
         }
     }
 
@@ -78,7 +79,7 @@ export class OrderController {
                     },
                     {
                         model: OrderItem,
-                        attributes: ['id', 'quantity', 'price_sell'],
+                        attributes: ['id', 'quantity', 'price_buy', 'price_sell', 'to_earn'],
                         include: [
                             {
                                 model: Perfume,

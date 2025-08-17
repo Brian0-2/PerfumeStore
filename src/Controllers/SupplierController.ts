@@ -1,31 +1,14 @@
 import type { Request, Response } from "express";
 import { errorHandler } from "../utils/errorHandler";
-import Supplier from "../models/Supplier";
-import SupplierOrder from "../models/SuplierOrder";
-import OrderStatus from "../models/OrderStatus";
-import PaymentMethod from "../models/PaymentMethod";
+import Order from "../models/Order";
 
 
 export class SupplierController {
 
     static getAllOrders = async (req: Request, res: Response) => {
         try {
-            const orders = await SupplierOrder.findAll({
-                include: [
-                    {
-                        model: Supplier,
-                        attributes: ['name']
-                    },
-                    {
-                        model: OrderStatus,
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: PaymentMethod,
-                        attributes: ['id', 'name']
-                    },
-                ],
-                attributes: ['id', 'total_amount', 'createdAt']
+            const orders = await Order.findAll({
+                //TODO
             });
             res.status(200).json({ orders });
         } catch (error) {
@@ -35,7 +18,8 @@ export class SupplierController {
 
     static createSupplierOrder = async (req: Request, res: Response) => {
         try {
-            //TODO            
+           //TODO
+            res.send("Create Supplier Order");            
         } catch (error) {
             return errorHandler({ res, message: "Error Creating Orders", statusCode: 500 });
         }
@@ -44,7 +28,7 @@ export class SupplierController {
     static getOrderById = async (req: Request, res: Response) => {
         try {
             //TODO
-            res.status(200).json(req.supplier_order);
+            res.status(200).json(req.order);
         } catch (error) {
             return errorHandler({ res, message: "Error Getting Order", statusCode: 500 });
         }

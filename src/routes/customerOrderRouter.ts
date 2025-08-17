@@ -2,13 +2,12 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { OrderController } from "../Controllers/OrderController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
-import { validateOrderExist } from "../middleware/CustomerOrder/validateOrderExist";
+import { validateOrderExist, validateOrderInput, validateOrderTotal } from "../middleware/CustomerOrder/validateCustomerOrder";
 import authenticate from "../middleware/auth";
-
+import { validateUserRole } from "../middleware/validateUserRole";
 
 const customerOrderRouter = Router();
-
-customerOrderRouter.use(authenticate);
+customerOrderRouter.use(authenticate,validateUserRole('admin'));
 
 customerOrderRouter.get(
     "/",
@@ -26,30 +25,9 @@ customerOrderRouter.get('/:id',
 
 customerOrderRouter.post(
     '/',
-    body("user_id")
-        .isInt({ gt: 0 }).withMessage("El user_id debe ser un número entero válido")
-        .notEmpty().withMessage("El user_id es requerido"),
-
-    body("items")
-        .isArray({ min: 1 }).withMessage("La orden debe contener al menos un item"),
-
-    body("items.*.perfume_id")
-        .isInt({ gt: 0 }).withMessage("El perfume_id de cada item debe ser un número entero válido")
-        .notEmpty().withMessage("El perfume_id de cada item es requerido"),
-
-    body("items.*.quantity")
-        .isInt({ gt: 0 }).withMessage("La cantidad de cada item debe ser mayor a 0")
-        .notEmpty().withMessage("La cantidad de cada item es requerida"),
-
-    body("items.*.price_buy")
-        .isFloat({ gt: 0 }).withMessage("El price_buy de cada item debe ser mayor a 0")
-        .notEmpty().withMessage("El price_buy de cada item es requerido"),
-
-    body("items.*.price_sell")
-        .isFloat({ gt: 0 }).withMessage("El price_sell de cada item debe ser mayor a 0")
-        .notEmpty().withMessage("El price_sell de cada item es requerido"),
-
+    validateOrderInput,
     handleInputErrors,
+    validateOrderTotal,
     OrderController.createCustomerOrder
 );
 
