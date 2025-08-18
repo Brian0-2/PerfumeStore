@@ -42,8 +42,8 @@ class User extends Model {
     @Column(DataType.ENUM("admin", "client"))
     declare role: string;
 
-    // @HasMany(() => Order)
-    // declare orders?: Order[];
+    @HasMany(() => Order)
+    declare orders : Order
 }
 
 export default User;

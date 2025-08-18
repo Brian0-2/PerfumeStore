@@ -1,19 +1,10 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany, AllowNull, Default } from "sequelize-typescript";
-import RecipientType from "./RecipientType";
 import OrderItem from "./OrderItem";
-import Payment from "./Payment";
 import OrderStatus from "./OrderStatus";
+import User from "./User";
 
 @Table({ tableName: "orders", timestamps: true })
 class Order extends Model {
-
-  @ForeignKey(() => RecipientType)
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare recipient_type_id: number;
-
-  @Column(DataType.INTEGER)
-  declare recipient_id: number;
 
   @Default(false)
   @AllowNull(false)
@@ -29,6 +20,11 @@ class Order extends Model {
   @Column(DataType.DECIMAL(10, 2))
   declare amount_paid: number;
 
+  @ForeignKey(() => User)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare user_id: number;
+
   @ForeignKey(() => OrderStatus)
   @AllowNull(false)
   @Column(DataType.INTEGER)
@@ -37,18 +33,12 @@ class Order extends Model {
   @BelongsTo(() => OrderStatus)
   declare order_status: OrderStatus;
 
-  @BelongsTo(() => RecipientType)
-  declare recipient_type: RecipientType;
+  @BelongsTo(() => User)
+  declare user: User;
 
   @HasMany(() => OrderItem)
   declare order_items?: OrderItem[];
 
-  @HasMany(() => Payment, {
-    foreignKey: "payable_id",
-    constraints: false,
-    scope: { payable_type_id: 1 }
-  })
-  declare payments?: Payment[];
 }
 
 export default Order;

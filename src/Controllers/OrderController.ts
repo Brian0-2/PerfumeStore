@@ -38,7 +38,11 @@ export class OrderController {
     static createCustomerOrder = async (req: Request, res: Response) => {
         const transaction = await db.transaction();
         try {
-            const { user_id,total, items } = req.body;
+            const {
+                user_id,
+                total,
+                items
+            } = req.body;
 
             const newOrder = await Order.create({
                 user_id,
@@ -67,38 +71,14 @@ export class OrderController {
             return errorHandler({ res, message: "Error creando orden", statusCode: 500 });
         }
     }
+static getOrderById = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json(req.order);
+  } catch (error) {
+    console.log(error);
+    return errorHandler({ res, message: "Error obteniendo la orden", statusCode: 500 });
+  }
+};
 
-    static getOrderById = async (req: Request, res: Response) => {
-        try {
-            const orderWithDetails = await req.order.reload({
-                attributes: ['id', 'is_paid', 'user_id', 'createdAt'],
-                include: [
-                    {
-                        model: OrderStatus,
-                        attributes: ['id', 'name']
-                    },
-                    {
-                        model: OrderItem,
-                        attributes: ['id', 'quantity', 'price_buy', 'price_sell', 'to_earn'],
-                        include: [
-                            {
-                                model: Perfume,
-                                attributes: ['id', 'name', 'size', 'image_url'],
-                                include: [
-                                    { model: Brand, attributes: ['id', 'name'] },
-                                    { model: FraganceType, attributes: ['id', 'name'] },
-                                    { model: Category, attributes: ['id', 'name'] },
-                                    { model: Supplier, attributes: ['id', 'name'] }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            });
 
-            res.status(200).json(orderWithDetails);
-        } catch (error) {
-            return errorHandler({ res, message: "Error obteniendo la orden", statusCode: 500 });
-        }
-    };
 }

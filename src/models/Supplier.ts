@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType, AllowNull, HasMany, Unique } from "sequelize-typescript";
 import Perfume from "./Perfume";
-import Order from "./Order";
+import SupplierOrder from "./SupplierOrder";
 
 @Table({
   tableName: "suppliers",
@@ -26,8 +26,8 @@ class Supplier extends Model {
   @HasMany(() => Perfume)
   declare perfumes: Perfume[];
 
-  // @HasMany(() => Order)
-  // declare orders: Order[];
+  @HasMany(() => SupplierOrder)
+  declare supplier_orders: SupplierOrder[];
 }
 
 export default Supplier;

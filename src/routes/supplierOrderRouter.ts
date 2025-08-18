@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { body, param } from "express-validator";
+import { param } from "express-validator";
 import { SupplierController } from "../Controllers/SupplierController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import authenticate from "../middleware/auth";
-import { validateOrderExist } from "../middleware/SupplierOrder/ValidateSupplierOrder";
+import { validateOrderExist, validateSupplierOrderInput } from "../middleware/SupplierOrder/ValidateSupplierOrder";
 import { validateUserRole } from "../middleware/validateUserRole";
+import { validateOrderTotal } from "../middleware/CustomerOrder/validateCustomerOrder";
 
 const supplierRouter = Router();
 supplierRouter.use(authenticate,validateUserRole('admin'));
@@ -23,6 +24,9 @@ supplierRouter.get('/:id',
 );
 
 supplierRouter.post('/',
+    validateSupplierOrderInput,
+    handleInputErrors,
+    validateOrderTotal,
     SupplierController.createSupplierOrder
 );
 

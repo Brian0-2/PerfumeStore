@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from 'express'
-import { param, validationResult, body } from 'express-validator'
-import Perfume from '../../models/Perfume'
+import { param, body } from 'express-validator'
 import { errorHandler } from '../../utils/errorHandler'
 import { UploadedFile } from 'express-fileupload'
+import Perfume from '../../models/Perfume'
 
 declare global {
   namespace Express {
@@ -86,7 +86,6 @@ export const validateImageUpload = (isRequired: boolean = true) => {
       }
     }
 
-    // Validar tipo MIME
     const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (!allowedTypes.includes(imageFile.mimetype)) {
       return errorHandler({
@@ -96,7 +95,6 @@ export const validateImageUpload = (isRequired: boolean = true) => {
       });
     }
 
-    // Validar tamaño máximo
     const maxSize = 2 * 1024 * 1024; // 2MB
     if (imageFile.size > maxSize) {
       return errorHandler({

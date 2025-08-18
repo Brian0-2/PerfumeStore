@@ -9,16 +9,6 @@ import SupplierOrderItem from "./SupplierOrderItem";
 })
 class OrderItem extends Model {
 
-  @ForeignKey(() => Order)
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare order_id: number;
-
-  @ForeignKey(() => Perfume)
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare perfume_id: number;
-
   @AllowNull(false)
   @Column(DataType.INTEGER)
   declare quantity: number;
@@ -35,6 +25,16 @@ class OrderItem extends Model {
   @Column(DataType.DECIMAL(10, 2))
   declare to_earn: number;
 
+  @ForeignKey(() => Order)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare order_id: number;
+
+  @ForeignKey(() => Perfume)
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  declare perfume_id: number;
+
   @BelongsTo(() => Order)
   declare order: Order;
 
@@ -42,7 +42,7 @@ class OrderItem extends Model {
   declare perfume: Perfume;
 
   @HasMany(() => SupplierOrderItem)
-  declare supplier_order_items?: SupplierOrderItem[];
+  declare supplier_order_items : number;
 }
 
 export default OrderItem;

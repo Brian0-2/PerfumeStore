@@ -1,5 +1,4 @@
 import { Table, Column, Model, DataType, Unique, HasMany, AllowNull } from 'sequelize-typescript';
-import Order from './Order';
 import Payment from './Payment';
 
 @Table({
@@ -16,9 +15,6 @@ class PaymentMethod extends Model {
 
   @HasMany(() => Payment)
   declare payments?: Payment[];
-
-  // @HasMany(() => Order)
-  // declare orders?: Order[];
 }
 
 export default PaymentMethod;

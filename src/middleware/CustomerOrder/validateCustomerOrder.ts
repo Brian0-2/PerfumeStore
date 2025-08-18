@@ -1,8 +1,16 @@
 // middleware: validateOrderExist.ts
 import { Request, Response, NextFunction } from "express";
 import { errorHandler } from "../../utils/errorHandler";
-import Order from "../../models/Order";
 import { body } from "express-validator";
+import Order from "../../models/Order";
+import OrderItem from "../../models/OrderItem";
+import OrderStatus from "../../models/OrderStatus";
+import User from "../../models/User";
+import Perfume from "../../models/Perfume";
+import Brand from "../../models/Brand";
+import FraganceType from "../../models/FraganceType";
+import Category from "../../models/Category";
+import Supplier from "../../models/Supplier";
 
 declare global {
   namespace Express {
@@ -15,7 +23,33 @@ declare global {
 export const validateOrderExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await Order.findByPk(req.params.id, {
-      attributes: ['id']
+ attributes: ['id', 'is_paid', 'total','amount_paid', 'createdAt'],
+      include: [
+        {
+          model: OrderStatus,
+          attributes: ['id', 'name']
+        },
+        {
+          model: User, 
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: OrderItem,
+          attributes: ['id', 'quantity', 'price_buy', 'price_sell', 'to_earn'],
+          include: [
+            {
+              model: Perfume,
+              attributes: ['id', 'name', 'size', 'image_url'],
+              include: [
+                { model: Brand, attributes: ['id', 'name'] },
+                { model: FraganceType, attributes: ['id', 'name'] },
+                { model: Category, attributes: ['id', 'name'] },
+                { model: Supplier, attributes: ['id', 'name'] }
+              ]
+            }
+          ]
+        }
+      ]
     });
 
     if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
@@ -28,6 +62,7 @@ export const validateOrderExist = async (req: Request, res: Response, next: Next
 };
 
 export const validateOrderInput = async (req: Request, res: Response, next: NextFunction) => {
+    
   await body("user_id")
     .notEmpty().withMessage("user_id es requerido")
     .isInt({ gt: 0 }).withMessage("user_id debe ser un número entero positivo")
@@ -68,19 +103,19 @@ export const validateOrderInput = async (req: Request, res: Response, next: Next
 
 
 export const validateOrderTotal = (req: Request, res: Response, next: NextFunction) => {
-  const {items} = req.body;
+  const { items } = req.body;
 
-    const totalCalculated = items.reduce((sum: number, item: any) => {
-      return sum + item.quantity * item.price_sell;
-    }, 0);
+  const totalCalculated = items.reduce((sum: number, item: OrderItem) => {
+    return sum + item.quantity * item.price_buy;
+  }, 0);
 
-    if (parseFloat(req.body.total) !== totalCalculated) {
-      return errorHandler({
-        res,
-        message: `El total enviado (${req.body.total}) no coincide con la suma de los items (${totalCalculated})`,
-        statusCode: 422
-      });
-    }
+  if (parseFloat(req.body.total) !== totalCalculated) {
+    return errorHandler({
+      res,
+      message: `El total enviado (${req.body.total}) no coincide con la suma de los items (${totalCalculated})`,
+      statusCode: 422
+    });
+  }
 
   next();
 };
