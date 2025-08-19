@@ -8,6 +8,7 @@ import OrderStatus from "../models/OrderStatus";
 import User from "../models/User";
 
 export class OrderController {
+
 static getAllOrders = async (req: Request, res: Response) => {
     try {
         const page = parseInt(req.query.page as string) || 1;
@@ -81,5 +82,15 @@ static getOrderById = async (req: Request, res: Response) => {
   }
 };
 
+static updateOrderStatusById = async (req: Request, res: Response) => {
+    try {
+        req.order.order_status_id = req.body.order_status_id;
+        await req.order.save();
+
+        res.status(200).json({ message: "Estado de la orden actualizado correctamente" }); 
+    } catch (error) {
+    return errorHandler({ res, message: "Error obteniendo la orden", statusCode: 500 });        
+    }
+}
 
 }

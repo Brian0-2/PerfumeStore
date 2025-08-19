@@ -2,10 +2,10 @@ import { Router } from "express";
 import { param } from "express-validator";
 import { SupplierController } from "../Controllers/SupplierController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
-import authenticate from "../middleware/auth";
 import { validateOrderExist, validateSupplierOrderInput } from "../middleware/SupplierOrder/ValidateSupplierOrder";
 import { validateUserRole } from "../middleware/validateUserRole";
 import { validateOrderTotal } from "../middleware/CustomerOrder/validateCustomerOrder";
+import authenticate from "../middleware/auth";
 
 const supplierRouter = Router();
 supplierRouter.use(authenticate,validateUserRole('admin'));

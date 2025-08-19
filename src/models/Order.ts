@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo, HasMany, AllowNu
 import OrderItem from "./OrderItem";
 import OrderStatus from "./OrderStatus";
 import User from "./User";
+import Payment from "./Payment";
 
 @Table({ tableName: "orders", timestamps: true })
 class Order extends Model {
@@ -39,6 +40,8 @@ class Order extends Model {
   @HasMany(() => OrderItem)
   declare order_items?: OrderItem[];
 
+  @HasMany(() => Payment)
+  declare payments?: Payment[];
 }
 
 export default Order;

@@ -3,12 +3,12 @@ import { body, param } from "express-validator";
 import { AuthController } from "../Controllers/AuthController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import { limiter } from "../config/limiter";
-import authenticate from "../middleware/auth";
 import { validateUserRole } from "../middleware/validateUserRole";
 import { validateToken } from "../middleware/validateToken";
+import authenticate from "../middleware/auth";
 
 const authRouter = Router();
-authRouter.use(limiter);
+authRouter.use(limiter(5));
 
 //AUTHENTICATE AND AUTHORIZE
 authRouter.post(

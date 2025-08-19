@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { errorHandler } from "../utils/errorHandler";
-import Order from "../models/Order";
 import SupplierOrder from "../models/SupplierOrder";
 import SupplierOrderItem from "../models/SupplierOrderItem";
 import { db } from "../config/db";

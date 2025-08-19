@@ -1,7 +1,8 @@
 import {rateLimit} from 'express-rate-limit';
 
-export const limiter = rateLimit({
+export const limiter = (petitionLimit: number) =>
+  rateLimit({
     windowMs: 60 * 1000, // 1 minute
-    limit: 5, // Limit each IP to 5 requests per windowMs
-    message: {error : 'Muchas peticiones, por favor intentalo mas tarde...'},
-})
+    limit: petitionLimit, // Limit each IP to petitionLimit requests per windowMs
+    message: { error: 'Too many requests, please try again later...' }
+  });

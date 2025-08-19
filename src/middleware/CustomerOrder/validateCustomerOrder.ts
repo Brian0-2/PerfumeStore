@@ -1,5 +1,4 @@
-// middleware: validateOrderExist.ts
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { errorHandler } from "../../utils/errorHandler";
 import { body } from "express-validator";
 import Order from "../../models/Order";
@@ -22,8 +21,20 @@ declare global {
 
 export const validateOrderExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const order = await Order.findByPk(req.params.id);
+
+    if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
+    req.order = order;
+    next();
+  } catch (error) {
+    return errorHandler({ res, message: "Error al validar la orden", statusCode: 500 });    
+  }
+}
+
+export const validateOrderExistAndShowDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const order = await Order.findByPk(req.params.id, {
- attributes: ['id', 'is_paid', 'total','amount_paid', 'createdAt'],
+      attributes: ['id', 'is_paid', 'total','amount_paid', 'createdAt'],
       include: [
         {
           model: OrderStatus,

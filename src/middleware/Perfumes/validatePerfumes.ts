@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express'
+import type { Request, Response, NextFunction } from "express";
 import { param, body } from 'express-validator'
 import { errorHandler } from '../../utils/errorHandler'
 import { UploadedFile } from 'express-fileupload'

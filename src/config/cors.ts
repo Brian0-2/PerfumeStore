@@ -1,32 +1,32 @@
-import {CorsOptions} from 'cors'
+import { CorsOptions } from 'cors'
 
 export const corsConfig: CorsOptions = {
-    //origin es la url de react
-    //callback es lo que va a permitir la peticion
+    // origin is the FRONNTEND URL
+    // callback is what will allow the request
     origin: function(origin, callback) {
 
-        //este codigo me imprime un vector como el siguiente el cual solo puedo acceder a --api 
-        // si arranco el servidor con npm run dev:api el cual esta configurado en package.json
+        // this code prints an array like the following, which I can only access with --api
+        // if I start the server with npm run dev:api, which is configured in package.json
         // console.log(process.argv);
         // [
         //     'C:\\Users\\ingbv\\Escritorio\\UpTask_MERN\\uptask_backend\\node_modules\\ts-node\\dist\\bin.js',
         //     'C:\\Users\\ingbv\\Escritorio\\UpTask_MERN\\uptask_backend\\src\\index.ts',
-            //Permitir este api en PostMan
+        //     // Allow this API in Postman
         //     '--api'
-        //   ]
+        // ]
 
         const whitelist = [process.env.FRONTEND_URL]
 
-        //Si en el vector del arranque con npm run dev:api existe en el arreglo ['--api'] en la posicion 3, metelo a la lista blanca
-        if(process.argv[2] === '--api'){
+        // If in the startup array with npm run dev:api it exists in the array ['--api'] at position 2, add it to the whitelist
+        if (process.argv[2] === '--api') {
             whitelist.push(undefined)
         }
 
-        if(whitelist.includes(origin)) {
-        //Primer parametro es un error y un true que si queremos permitir la conexion
+        if (whitelist.includes(origin)) {
+            // First parameter is an error, second is true if we want to allow the connection
             callback(null, true)
-        }else {
-            callback(new Error('Error de CORS'))
+        } else {
+            callback(new Error('CORS Error'))
         }
     }
 }

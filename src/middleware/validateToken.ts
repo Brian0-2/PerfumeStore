@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from "express";
-import { Op } from "sequelize";
+import type { Request, Response, NextFunction } from "express";
 import User from "../models/User";
 import { errorHandler } from "../utils/errorHandler";
 

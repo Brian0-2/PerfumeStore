@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo, AllowNull } from "sequelize-typescript";
 import PaymentMethod from "./PaymentMethod";
+import Order from "./Order";
 
 @Table({
   tableName: "payments",
@@ -15,14 +16,18 @@ class Payment extends Model {
   declare payment_method_id: number;
 
   @AllowNull(false)
+  @ForeignKey(() => Order)
   @Column(DataType.INTEGER)
-  declare recipient_id: number;
+  declare order_id: number;
 
   @Column(DataType.TEXT)
   declare note: string;
 
   @BelongsTo(() => PaymentMethod)
   declare payment_method: PaymentMethod;
+
+  @BelongsTo(() => Order)
+  declare order : Order
 
 }
 

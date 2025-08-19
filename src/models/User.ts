@@ -44,6 +44,7 @@ class User extends Model {
 
     @HasMany(() => Order)
     declare orders : Order
+    
 }
 
 export default User;
