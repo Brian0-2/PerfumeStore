@@ -3,6 +3,10 @@ import { param, body } from 'express-validator'
 import { errorHandler } from '../../utils/errorHandler'
 import { UploadedFile } from 'express-fileupload'
 import Perfume from '../../models/Perfume'
+import Brand from '../../models/Brand'
+import Category from '../../models/Category'
+import FraganceType from '../../models/FraganceType'
+import Supplier from '../../models/Supplier'
 
 declare global {
   namespace Express {
@@ -14,7 +18,15 @@ declare global {
 
 export const validatePerfumeExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const perfume = await Perfume.findByPk(req.params.id);
+    const perfume = await Perfume.findByPk(req.params.id, {
+      attributes: ['id', 'name', 'size', 'image_url'],
+      include: [
+        { model: Brand, attributes: ['id', 'name'] },
+        { model: Category, attributes: ['id', 'name'] },
+        { model: FraganceType, attributes: ['id', 'name'] },
+        { model: Supplier, attributes: ['id', 'name'] }
+      ],
+    });
 
     if (!perfume) return errorHandler({ res, message: "Perfume no encontrado", statusCode: 404 });
     req.perfume = perfume;

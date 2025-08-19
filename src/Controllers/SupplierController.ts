@@ -4,17 +4,35 @@ import Order from "../models/Order";
 import SupplierOrder from "../models/SupplierOrder";
 import SupplierOrderItem from "../models/SupplierOrderItem";
 import { db } from "../config/db";
+import OrderStatus from "../models/OrderStatus";
+import { paginate } from "../utils/paginate";
+import Supplier from "../models/Supplier";
 
 export class SupplierController {
 
-    static getAllOrders = async (req: Request, res: Response) => {
-        try {
-            const orders = await Order.findAll({});
-            res.status(200).json({ orders });
-        } catch (error) {
-            return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
-        }
+static getAllOrders = async (req: Request, res: Response) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const perPage = parseInt(req.query.per_page as string) || 10;
+
+        const orders = await paginate(SupplierOrder, {
+            page,
+            perPage,
+            attributes: ['id', 'total', 'createdAt'],
+            include: [
+                { model: Supplier, attributes: ['id', 'name', 'phone', 'email'] },
+                { model: OrderStatus, attributes: ['name'] }
+            ]
+        });
+
+        res.status(200).json(orders);
+    } catch (error) {
+        console.log(error);
+        return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
     }
+};
+
+
 
     static createSupplierOrder = async (req: Request, res: Response) => {
         const transaction = await db.transaction();

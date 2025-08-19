@@ -1,39 +1,40 @@
 import type { Request, Response } from "express";
 import { errorHandler } from "../utils/errorHandler";
 import { db } from "../config/db";
+import { paginate } from "../utils/paginate";
 import Order from "../models/Order";
 import OrderItem from "../models/OrderItem";
 import OrderStatus from "../models/OrderStatus";
-import Perfume from "../models/Perfume";
-import Brand from "../models/Brand";
-import FraganceType from "../models/FraganceType";
-import Category from "../models/Category";
-import Supplier from "../models/Supplier";
 import User from "../models/User";
 
 export class OrderController {
+static getAllOrders = async (req: Request, res: Response) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const perPage = parseInt(req.query.per_page as string) || 10;
 
-    static getAllOrders = async (req: Request, res: Response) => {
-        try {
-            const orders = await Order.findAll({
-                include: [
-                    {
-                        model: User,
-                        attributes: ['name']
-                    },
-                    {
-                        model: OrderStatus,
-                        attributes: ['id', 'name']
-                    },
-                ],
-                attributes: ['id', 'is_paid', 'createdAt']
-            });
+        const order = await paginate(Order, {
+            page,
+            perPage,
+            attributes: ['id', 'is_paid', 'createdAt'],
+            include: [
+                {
+                    model: User,
+                    attributes: ['name']
+                },
+                {
+                    model: OrderStatus,
+                    attributes: ['id', 'name']
+                }
+            ],
+        });
 
-            res.status(200).json({ orders });
-        } catch (error) {
-            return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
-        }
+        res.status(200).json(order);
+    } catch (error) {
+        console.log(error);
+        return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
     }
+};
 
     static createCustomerOrder = async (req: Request, res: Response) => {
         const transaction = await db.transaction();

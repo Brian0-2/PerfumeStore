@@ -3,15 +3,36 @@ import { UploadedFile } from 'express-fileupload';
 import { errorHandler } from "../utils/errorHandler";
 import { deleteImage, uploadImage } from "../config/cloudinary";
 import Perfume from "../models/Perfume";
-import fs from 'fs-extra'
+import fs from 'fs-extra';
+import { paginate } from "../utils/paginate";
+import Brand from "../models/Brand";
+import Category from "../models/Category";
+import FraganceType from "../models/FraganceType";
+import Supplier from "../models/Supplier";
 
 
 export class PerfumeController {
   static getAllPerfumes = async (req: Request, res: Response) => {
     try {
-      const perfumes = await Perfume.findAll({});
-      res.status(200).json({ perfumes });
+      const page = parseInt(req.query.page as string) || 1;
+      const perPage = parseInt(req.query.per_page as string) || 10;
+
+      const result = await paginate(Perfume, {
+        page,
+        perPage,
+        attributes: ['id', 'name', 'size', 'image_url'],
+        include: [
+          { model: Brand, attributes: ['id', 'name'] },
+          { model: Category, attributes: ['id', 'name'] },
+          { model: FraganceType, attributes: ['id', 'name'] },
+          { model: Supplier, attributes: ['id', 'name'] }
+        ],
+        order: [['createdAt', 'DESC']]
+      });
+
+      res.status(200).json(result);
     } catch (error) {
+      console.log(error);
       return errorHandler({ res, message: "Error Getting Perfumes", statusCode: 500 });
     }
   };
