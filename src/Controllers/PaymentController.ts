@@ -98,6 +98,14 @@ export class PaymentController {
         }
     }
 
+    static getPaymentById = async (req: Request, res: Response) => {
+        try {
+            res.status(200).json(req.payment);
+        } catch (error) {
+            return errorHandler({ res, message: "Error Updating Payment", statusCode: 500 });            
+        }
+    }
+
     static deletePayment = async (req: Request, res: Response) => {
         const transaction = await db.transaction();
         try {

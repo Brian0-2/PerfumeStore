@@ -12,7 +12,8 @@ declare global {
 
 export const validatePaymentMethodExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const requestParam = Number(req.params?.id) ?? req.body?.payment_method_id;
+    const requestParam = req.body?.payment_method_id;
+    console.log(requestParam);
     const paymentMethod = await PaymentMethod.findByPk(requestParam);
 
     if (!paymentMethod) return errorHandler({ res, message: "Método de pago no encontrado", statusCode: 404 });

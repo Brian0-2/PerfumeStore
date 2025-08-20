@@ -21,7 +21,7 @@ paymentRouter.post('/',
     PaymentController.createPayment
 )
 
-paymentRouter.get('/:id',
+paymentRouter.get('/:id/update',
     param("id")
         .exists().withMessage("El ID del pago es obligatorio")
         .isInt({ gt: 0 }).withMessage("El ID del pago debe ser un número entero positivo"),
@@ -33,6 +33,15 @@ paymentRouter.get('/:id',
     paymentExist,
     validatePaymentMethodExist,
     PaymentController.updatePayment
+);
+
+paymentRouter.get('/:id',
+    param("id")
+        .exists().withMessage("El ID del pago es obligatorio")
+        .isInt({ gt: 0 }).withMessage("El ID del pago debe ser un número entero positivo"),
+    handleInputErrors,
+    paymentExist,
+    PaymentController.getPaymentById
 );
 
 paymentRouter.delete('/:id',
