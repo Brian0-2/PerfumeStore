@@ -21,12 +21,15 @@ declare global {
 
 export const validateOrderExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const order = await Order.findByPk(req.params.id);
+    const requestParam = req.body?.order_id ?? Number(req.params?.id);
 
+    const order = await Order.findByPk(requestParam);
     if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
+    
     req.order = order;
     next();
   } catch (error) {
+    console.log(error);
     return errorHandler({ res, message: "Error al validar la orden", statusCode: 500 });    
   }
 }

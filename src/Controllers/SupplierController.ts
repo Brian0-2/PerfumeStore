@@ -9,29 +9,27 @@ import Supplier from "../models/Supplier";
 
 export class SupplierController {
 
-static getAllOrders = async (req: Request, res: Response) => {
-    try {
-        const page = parseInt(req.query.page as string) || 1;
-        const perPage = parseInt(req.query.per_page as string) || 10;
+    static getAllOrders = async (req: Request, res: Response) => {
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const perPage = parseInt(req.query.per_page as string) || 10;
 
-        const orders = await paginate(SupplierOrder, {
-            page,
-            perPage,
-            attributes: ['id', 'total', 'createdAt'],
-            include: [
-                { model: Supplier, attributes: ['id', 'name', 'phone', 'email'] },
-                { model: OrderStatus, attributes: ['name'] }
-            ]
-        });
+            const orders = await paginate(SupplierOrder, {
+                page,
+                perPage,
+                attributes: ['id', 'total', 'createdAt'],
+                include: [
+                    { model: Supplier, attributes: ['id', 'name', 'phone', 'email'] },
+                    { model: OrderStatus, attributes: ['name'] }
+                ]
+            });
 
-        res.status(200).json(orders);
-    } catch (error) {
-        console.log(error);
-        return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
-    }
-};
-
-
+            res.status(200).json(orders);
+        } catch (error) {
+            console.log(error);
+            return errorHandler({ res, message: "Error Getting Orders", statusCode: 500 });
+        }
+    };
 
     static createSupplierOrder = async (req: Request, res: Response) => {
         const transaction = await db.transaction();
@@ -63,10 +61,11 @@ static getAllOrders = async (req: Request, res: Response) => {
 
     static getOrderById = async (req: Request, res: Response) => {
         try {
-            res.status(200).json( req.supplier_order);
+            res.status(200).json(req.supplier_order);
         } catch (error) {
             console.log(error);
             return errorHandler({ res, message: "Error Getting Order", statusCode: 500 });
         }
     }
+    
 }

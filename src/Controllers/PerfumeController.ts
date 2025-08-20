@@ -10,8 +10,8 @@ import Category from "../models/Category";
 import FraganceType from "../models/FraganceType";
 import Supplier from "../models/Supplier";
 
-
 export class PerfumeController {
+
   static getAllPerfumes = async (req: Request, res: Response) => {
     try {
       const page = parseInt(req.query.page as string) || 1;

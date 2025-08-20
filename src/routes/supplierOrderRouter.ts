@@ -4,11 +4,11 @@ import { SupplierController } from "../Controllers/SupplierController";
 import { handleInputErrors } from "../middleware/handleInputErrors";
 import { validateOrderExist, validateSupplierOrderInput } from "../middleware/SupplierOrder/ValidateSupplierOrder";
 import { validateUserRole } from "../middleware/validateUserRole";
-import { validateOrderTotal } from "../middleware/CustomerOrder/validateCustomerOrder";
+import { validateOrderTotal } from "../middleware/Order/validateOrder";
 import authenticate from "../middleware/auth";
 
 const supplierRouter = Router();
-supplierRouter.use(authenticate,validateUserRole('admin'));
+supplierRouter.use(authenticate, validateUserRole('admin'));
 
 supplierRouter.get("/",
     SupplierController.getAllOrders

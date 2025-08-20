@@ -7,7 +7,7 @@ import {
     validateOrderExistAndShowDetails,
     validateOrderInput,
     validateOrderTotal
-} from "../middleware/CustomerOrder/validateCustomerOrder";
+} from "../middleware/Order/validateOrder";
 import { validateUserRole } from "../middleware/validateUserRole";
 import authenticate from "../middleware/auth";
 import { limiter } from "../config/limiter";

@@ -7,6 +7,7 @@ import authRouter from './routes/authRouter';
 import perfumeRouter from './routes/perfumeRouter';
 import orderRouter from './routes/orderRouter';
 import supplierRouter from './routes/supplierOrderRouter';
+import paymentRouter from './routes/paymentRouter';
 
 connectDB();
 const app = express();
@@ -19,5 +20,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/perfume', perfumeRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/supplier-order', supplierRouter);
+app.use('/api/payment', paymentRouter);
+
 
 export default app;
