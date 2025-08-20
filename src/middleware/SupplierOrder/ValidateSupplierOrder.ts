@@ -14,7 +14,7 @@ import Category from "../../models/Category";
 declare global {
   namespace Express {
     interface Request {
-      supplier_order?: SupplierOrder
+      supplierOrder?: SupplierOrder
     }
   }
 }
@@ -59,7 +59,7 @@ export const validateOrderExist = async (req: Request, res: Response, next: Next
 
     if (!order) return errorHandler({ res, message: "Orden no encontrada", statusCode: 404 });
 
-    req.supplier_order = order;
+    req.supplierOrder = order;
     next();
   } catch (error) {
     return errorHandler({ res, message: "Error al validar la orden", statusCode: 500 });

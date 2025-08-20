@@ -14,6 +14,13 @@ supplierRouter.get("/",
     SupplierController.getAllOrders
 );
 
+supplierRouter.post('/',
+    validateSupplierOrderInput,
+    handleInputErrors,
+    validateOrderTotal,
+    SupplierController.createSupplierOrder
+);
+
 supplierRouter.get('/:id',
     param("id")
         .isInt({ gt: 0 }).withMessage("El id debe ser un número entero válido")
@@ -23,11 +30,13 @@ supplierRouter.get('/:id',
     SupplierController.getOrderById
 );
 
-supplierRouter.post('/',
-    validateSupplierOrderInput,
+supplierRouter.delete('/:id',
+    param("id")
+        .isInt({ gt: 0 }).withMessage("El id debe ser un número entero válido")
+        .notEmpty().withMessage("El id es requerido"),
     handleInputErrors,
-    validateOrderTotal,
-    SupplierController.createSupplierOrder
+    validateOrderExist,
+    SupplierController.deleteSupplierOrder
 );
 
 export default supplierRouter;

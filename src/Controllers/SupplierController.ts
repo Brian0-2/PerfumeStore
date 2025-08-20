@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
+import { db } from "../config/db";
+import { paginate } from "../utils/paginate";
 import { errorHandler } from "../utils/errorHandler";
 import SupplierOrder from "../models/SupplierOrder";
 import SupplierOrderItem from "../models/SupplierOrderItem";
-import { db } from "../config/db";
 import OrderStatus from "../models/OrderStatus";
-import { paginate } from "../utils/paginate";
 import Supplier from "../models/Supplier";
 
 export class SupplierController {
@@ -61,11 +61,28 @@ export class SupplierController {
 
     static getOrderById = async (req: Request, res: Response) => {
         try {
-            res.status(200).json(req.supplier_order);
+            res.status(200).json(req.supplierOrder);
         } catch (error) {
             console.log(error);
             return errorHandler({ res, message: "Error Getting Order", statusCode: 500 });
         }
     }
-    
+
+    static deleteSupplierOrder = async (req: Request, res: Response) => {
+        const transaction = await db.transaction();
+        try {
+
+            await SupplierOrderItem.destroy({ where: { supplier_order_id: req.supplierOrder.id }, transaction });
+
+            await req.supplierOrder.destroy({ transaction });
+            await transaction.commit();
+            res.status(200).json({ message: "Orden de proveedor Eliminada correctamente!" });
+
+        } catch (error) {
+            await transaction.rollback();
+            return errorHandler({ res, message: "Error al eliminar la orden del proveedor", statusCode: 500 });
+        }
+    };
+
+
 }
