@@ -101,9 +101,9 @@ export class AuthController {
         attributes: ['id', 'email', 'password', 'confirmed']
       });
 
-      if (!user) return errorHandler({ res, message: "Usuario no encontrado", statusCode: 404 });
-      if (!user.confirmed) return errorHandler({ res, message: "Cuenta no confirmada", statusCode: 403 });
-      if (!await checkPassword(password, user.password)) return errorHandler({ res, message: "Correo o contraseña incorrecta", statusCode: 401 });
+      if (!user) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 404 });
+      if (!user.confirmed) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 403 });
+      if (!await checkPassword(password, user.password)) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 401 });
 
       res.status(200).json(generateJWT(user.id));
     } catch (error) {

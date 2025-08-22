@@ -1,11 +1,23 @@
-import type { Request , Response , NextFunction } from 'express';
-import { validationResult } from 'express-validator';
+import type { Request, Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 
-export const handleInputErrors = (req : Request , res : Response , next : NextFunction) => {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-         res.status(422).json({ errors: errors.array() });
-         return;
-    }
-    next();
-}
+type FormattedError = { field?: string; message: string };
+
+export const handleInputErrors = (req: Request, res: Response, next: NextFunction) => {
+  const result = validationResult(req);
+
+  if (!result.isEmpty()) {
+    const formattedErrors: FormattedError[] = result.array().map((err: any) => ({
+      field: err.param || err.path,
+      message: err.msg || "Error de validación desconocido",
+    }));
+
+    res.status(422).json({
+      success: false,
+      message: "Errores de validación",
+      errors: formattedErrors,
+    });
+  }
+
+  next();
+};
