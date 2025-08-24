@@ -130,6 +130,7 @@ export class AuthController {
 
       req.user.password = await hashPassword(password);
       req.user.token = null;
+      req.user.confirmed = true;
       req.user.tokenExpiresAt = null;
       await req.user.save();
 
