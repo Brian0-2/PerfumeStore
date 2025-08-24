@@ -8,39 +8,10 @@ import { validateToken } from "../middleware/validateToken";
 import authenticate from "../middleware/auth";
 
 const authRouter = Router();
-authRouter.use(limiter(5));
 
-// CREAR CUENTA (solo admin)
-authRouter.post(
-  "/create-account",
-  authenticate,
-  validateUserRole("admin"),
-  body("name").notEmpty().withMessage("El nombre es obligatorio"),
-  body("email").isEmail().withMessage("El correo no es válido"),
-  body("phone")
-    .notEmpty().withMessage("El teléfono es obligatorio")
-    .isLength({ min: 10, max: 10 }).withMessage("El teléfono debe tener 10 caracteres"),
-  handleInputErrors,
-  AuthController.createAccount
-);
-
-// VALIDAR INVITACIÓN
-authRouter.get(
-  "/invite/:token",
-  param("token")
-    .isLength({ min: 36, max: 36 })
-    .withMessage("El token no es válido")
-    .notEmpty()
-    .withMessage("El token no puede estar vacío"),
-  handleInputErrors,
-  validateToken,
-  AuthController.validToken
-);
-
-
-// LOGIN
 authRouter.post(
   "/login",
+  limiter(5),
   body("email")
     .isEmail()
     .withMessage("El correo no es válido")
@@ -51,12 +22,24 @@ authRouter.post(
   AuthController.login
 );
 
-// FORGOT PASSWORD
-authRouter.post("/forgot-password",
-    (req, res, next) => {
-    console.log(req.body);
-    next();
-  },
+authRouter.post(
+  "/create-account",
+  limiter(5),
+  authenticate,
+  validateUserRole("admin"),
+  body("name").notEmpty().withMessage("El nombre es obligatorio"),
+  body("email").isEmail().withMessage("El correo no es válido"),
+  body("phone")
+    .notEmpty().withMessage("El teléfono es obligatorio")
+    .isLength({ min: 10, max: 10 })
+    .withMessage("El teléfono debe tener 10 caracteres"),
+  handleInputErrors,
+  AuthController.createAccount
+);
+
+authRouter.post(
+  "/forgot-password",
+  limiter(5),
   body("email")
     .isEmail()
     .withMessage("El correo no es válido")
@@ -66,8 +49,9 @@ authRouter.post("/forgot-password",
   AuthController.forgotPassword
 );
 
-// CREATE USER PASSWORD
-authRouter.post("/create-user-password/:token",
+authRouter.post(
+  "/create-user-password/:token",
+  limiter(5),
   param("token")
     .isLength({ min: 36, max: 36 })
     .withMessage("El token no es válido")
@@ -88,13 +72,12 @@ authRouter.post("/create-user-password/:token",
   AuthController.createUserPasswordWithToken
 );
 
-// OBTENER USUARIO AUTENTICADO
 authRouter.get("/user", authenticate, AuthController.getUser);
 
-// uPDATE PASSWORD
 authRouter.post(
   "/update-password",
   authenticate,
+  limiter(5),
   body("current_password").notEmpty().withMessage("La contraseña actual es obligatoria"),
   body("new_password")
     .isLength({ min: 8 })
@@ -105,7 +88,6 @@ authRouter.post(
   AuthController.updateCurrentUserPassword
 );
 
-// VERIFICAR CONTRASEÑA
 authRouter.post(
   "/check-password",
   authenticate,
