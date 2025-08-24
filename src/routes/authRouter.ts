@@ -37,9 +37,37 @@ authRouter.get(
   AuthController.validToken
 );
 
-// ACEPTAR INVITACIÓN / ESTABLECER CONTRASEÑA
+
+// LOGIN
 authRouter.post(
-  '/invite/:token',
+  "/login",
+  body("email")
+    .isEmail()
+    .withMessage("El correo no es válido")
+    .notEmpty()
+    .withMessage("El correo es obligatorio"),
+  body("password").notEmpty().withMessage("La contraseña es obligatoria"),
+  handleInputErrors,
+  AuthController.login
+);
+
+// FORGOT PASSWORD
+authRouter.post("/forgot-password",
+    (req, res, next) => {
+    console.log(req.body);
+    next();
+  },
+  body("email")
+    .isEmail()
+    .withMessage("El correo no es válido")
+    .notEmpty()
+    .withMessage("El correo es obligatorio"),
+  handleInputErrors,
+  AuthController.forgotPassword
+);
+
+// CREATE USER PASSWORD
+authRouter.post("/create-user-password/:token",
   param("token")
     .isLength({ min: 36, max: 36 })
     .withMessage("El token no es válido")
@@ -57,63 +85,13 @@ authRouter.post(
     }),
   handleInputErrors,
   validateToken,
-  AuthController.setPassword
-);
-
-// LOGIN
-authRouter.post(
-  "/login",
-  body("email")
-    .isEmail()
-    .withMessage("El correo no es válido")
-    .notEmpty()
-    .withMessage("El correo es obligatorio"),
-  body("password").notEmpty().withMessage("La contraseña es obligatoria"),
-  handleInputErrors,
-  AuthController.login
-);
-
-// OLVIDÉ MI CONTRASEÑA
-authRouter.post(
-  "/forgot-password",
-  body("email")
-    .isEmail()
-    .withMessage("El correo no es válido")
-    .notEmpty()
-    .withMessage("El correo es obligatorio"),
-  handleInputErrors,
-  AuthController.forgotPassword
-);
-
-// RESET CONTRASEÑA
-authRouter.post(
-  "/reset-password/:token",
-  param("token")
-    .isLength({ min: 36, max: 36 })
-    .withMessage("El token no es válido")
-    .notEmpty()
-    .withMessage("El token no puede estar vacío"),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("La contraseña debe tener al menos 8 caracteres")
-    .notEmpty()
-    .withMessage("La contraseña es obligatoria"),
-  body("confirmPassword")
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Las contraseñas no coinciden");
-      }
-      return true;
-    }),
-  handleInputErrors,
-  validateToken,
-  AuthController.resetPasswordWithToken
+  AuthController.createUserPasswordWithToken
 );
 
 // OBTENER USUARIO AUTENTICADO
 authRouter.get("/user", authenticate, AuthController.getUser);
 
-// ACTUALIZAR CONTRASEÑA
+// uPDATE PASSWORD
 authRouter.post(
   "/update-password",
   authenticate,

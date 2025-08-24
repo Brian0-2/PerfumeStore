@@ -72,23 +72,6 @@ export class AuthController {
     }
   }
 
-  static setPassword = async (req: Request, res: Response) => {
-    try {
-      const { password } = req.body;
-      const user = req.user;
-
-      user.password = await hashPassword(password);
-      user.confirmed = true;
-      user.token = null;
-      user.tokenExpiresAt = null;
-
-      await user.save();
-
-      res.status(200).json({ message: "Contraseña agregada correctamente, cuenta confirmada." });
-    } catch (error) {
-      return errorHandler({ res, message: "Error al establecer la contraseña", statusCode: 500 });
-    }
-  };
 
   static login = async (req: Request, res: Response) => {
     try {
@@ -101,9 +84,9 @@ export class AuthController {
         attributes: ['id', 'email', 'password', 'confirmed']
       });
 
-      if (!user) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 404 });
-      if (!user.confirmed) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 403 });
-      if (!await checkPassword(password, user.password)) return errorHandler({ res, message: "Correo o contraseña incorrecta o cuenta no confirmada", statusCode: 401 });
+      if (!user) return errorHandler({ res, message: "Correo o contraseña incorrecta", statusCode: 404 });
+      if (!user.confirmed) return errorHandler({ res, message: "Correo o contraseña incorrecta", statusCode: 403 });
+      if (!await checkPassword(password, user.password)) return errorHandler({ res, message: "Correo o contraseña incorrecta", statusCode: 401 });
 
       res.status(200).json(generateJWT(user.id));
     } catch (error) {
@@ -121,8 +104,7 @@ export class AuthController {
         attributes: ['id', 'email', 'name', 'token','tokenExpiresAt', 'confirmed']
       })
 
-      if (!user) return errorHandler({ res, message: "Usuario no encontrado", statusCode: 404 });
-      if (!user.confirmed) return errorHandler({ res, message: "Cuenta no confirmada", statusCode: 403 });
+      if (!user) return errorHandler({ res, message: "Usuario no encontrado o cuenta no confirmada", statusCode: 403 });
 
       user.token = getToken();
       user.tokenExpiresAt = tokenExpires();
@@ -142,11 +124,9 @@ export class AuthController {
     }
   }
 
-  static resetPasswordWithToken = async (req: Request, res: Response) => {
+  static createUserPasswordWithToken = async (req: Request, res: Response) => {
     try {
       const { password } = req.body;
-
-      if(!req.user.confirmed) return errorHandler({ res, message: "Cuenta no confirmada", statusCode: 403 });
 
       req.user.password = await hashPassword(password);
       req.user.token = null;

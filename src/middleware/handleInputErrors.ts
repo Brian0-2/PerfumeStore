@@ -1,9 +1,17 @@
 import type { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 
+// Tipo para errores individuales
 type FormattedError = { field?: string; message: string };
 
-export const handleInputErrors = (req: Request, res: Response, next: NextFunction) => {
+// Tipo para la respuesta de error completa
+type ErrorResponse = {
+  success: false;
+  message: string;
+  errors: FormattedError[];
+};
+
+export const handleInputErrors = (req: Request, res: Response<ErrorResponse>, next: NextFunction) => {
   const result = validationResult(req);
 
   if (!result.isEmpty()) {
@@ -17,6 +25,7 @@ export const handleInputErrors = (req: Request, res: Response, next: NextFunctio
       message: "Errores de validación",
       errors: formattedErrors,
     });
+    return;
   }
 
   next();

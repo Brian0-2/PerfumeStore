@@ -12,7 +12,7 @@ export class AuthEmail {
   static app = process.env.APP_NAME;
 
   static sendConfirmationEmail = async (user: { name: string; email: string; token: string }) => {
-    const link = `${process.env.BACKEND_URL}/auth/invite/${user.token}`;
+    const link = `${process.env.FRONTEND_URL}/auth/new-password/${user.token}`;
     const html = pug.renderFile(__dirname + "/templates/sendConfirmation.pug", {
       name: user.name,
       token: user.token,
@@ -32,7 +32,7 @@ export class AuthEmail {
   };
 
   static sendPasswordResetToken = async (user: EmailType) => {
-    const link = `${process.env.BACKEND_URL}/auth/reset-password/${user.token}`;
+    const link = `${process.env.FRONTEND_URL}/auth/new-password/${user.token}`;
     const html = pug.renderFile(__dirname + "/templates/sendPasswordReset.pug", {
       name: user.name,
       token: user.token,
