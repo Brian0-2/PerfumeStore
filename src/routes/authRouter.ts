@@ -72,6 +72,20 @@ authRouter.post(
   AuthController.createUserPasswordWithToken
 );
 
+authRouter.get(
+  "/valid-token-user/:token",
+  limiter(5),
+  param("token")
+    .isLength({ min: 36, max: 36 })
+    .withMessage("El token no es válido")
+    .notEmpty()
+    .withMessage("El token no puede estar vacío"),
+  handleInputErrors,
+  validateToken,
+  AuthController.validateTokenUser
+);
+
+
 authRouter.get("/user", authenticate, AuthController.getUser);
 
 authRouter.post(

@@ -18,7 +18,7 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
     if (!token) return errorHandler({ res, message: "Token is required", statusCode: 400 });
 
     const user = await User.findOne({
-      attributes: ['id', 'password', 'confirmed', 'token', 'tokenExpiresAt'],
+      attributes: ['id','name', 'password', 'confirmed', 'token', 'tokenExpiresAt'],
       where: { token }
     });
 

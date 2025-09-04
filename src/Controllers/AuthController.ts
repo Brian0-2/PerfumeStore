@@ -148,6 +148,14 @@ export class AuthController {
     }
   }
 
+  static validateTokenUser = async (req: Request, res: Response) => {
+    try {
+      res.status(200).json({ message: `Estimad@ ${req.user.name}, coloca una contraseña nueva y segura` });
+    } catch (error) {
+      return errorHandler({ res, message: "Error con el token", statusCode: 500 });
+    }
+  }
+
   static updateCurrentUserPassword = async (req: Request, res: Response) => {
     try {
       const { current_password, new_password } = req.body;
