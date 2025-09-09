@@ -17,7 +17,7 @@ export class OrderController {
             const order = await paginate(Order, {
                 page,
                 perPage,
-                attributes: ['id', 'is_paid', 'createdAt'],
+                attributes: ['id', 'is_paid','total','amount_paid','createdAt'],
                 include: [
                     {
                         model: User,
@@ -28,6 +28,7 @@ export class OrderController {
                         attributes: ['id', 'name']
                     }
                 ],
+                where: { user_id: req.user?.id }
             });
 
             res.status(200).json(order);

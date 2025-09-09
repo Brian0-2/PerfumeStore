@@ -1,6 +1,6 @@
 import { Model, ModelStatic, FindAndCountOptions } from "sequelize";
 
-interface PaginateOptions<T extends Model> {
+interface PaginateOptions {
   page?: number;
   perPage?: number;
   attributes?: FindAndCountOptions['attributes'];
@@ -11,7 +11,7 @@ interface PaginateOptions<T extends Model> {
 
 export const paginate = async <T extends Model>(
   model: ModelStatic<T>,
-  options: PaginateOptions<T>
+  options: PaginateOptions
 ) => {
   const page = options.page || 1;
   const perPage = options.perPage || 10;
@@ -24,6 +24,7 @@ export const paginate = async <T extends Model>(
     order: options.order || [['createdAt', 'DESC']],
     limit: perPage,
     offset,
+    ...options
   });
 
   const lastPage = Math.ceil(total / perPage);

@@ -8,6 +8,7 @@ import perfumeRouter from './routes/perfumeRouter';
 import orderRouter from './routes/orderRouter';
 import supplierRouter from './routes/supplierOrderRouter';
 import paymentRouter from './routes/paymentRouter';
+import customerRouter from './routes/customerRouter';
 
 connectDB();
 const app = express();
@@ -21,6 +22,8 @@ app.use('/api/perfume', perfumeRouter);
 app.use('/api/order', orderRouter);
 app.use('/api/supplier-order', supplierRouter);
 app.use('/api/payment', paymentRouter);
+app.use('/api/customer', customerRouter);
+
 
 
 export default app;
